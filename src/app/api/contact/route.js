@@ -32,17 +32,17 @@ export async function POST(request) {
       port: 587,
       secure: false,
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.EMAIL_USER,   // gopichandt13579@gmail.com
+        pass: process.env.EMAIL_PASS,   // your Gmail App Password
       },
     });
 
     await transporter.verify();
 
-    // Email to admin
+    // ── Email to admin ──────────────────────────────────────
     await transporter.sendMail({
       from: `"Nachi Consultation" <${process.env.EMAIL_USER}>`,
-      to: process.env.ADMIN_EMAIL,
+      to: process.env.ADMIN_EMAIL,      // gopichandt13579@gmail.com  (set in .env)
       replyTo: email,
       subject: `New Job Application — ${jobType} from ${name}`,
       html: `
@@ -96,7 +96,7 @@ export async function POST(request) {
       attachments,
     });
 
-    // Auto-reply to applicant
+    // ── Auto-reply to applicant ──────────────────────────────
     await transporter.sendMail({
       from: `"Nachi Consultation" <${process.env.EMAIL_USER}>`,
       to: email,
@@ -119,7 +119,7 @@ export async function POST(request) {
             </p>
           </div>
           <div style="padding:16px 32px;background:#f5f5f5;font-size:12px;color:#aaa;text-align:center">
-            Nachi Consultation · Guntur, Andhra Pradesh · nagalakshmiakurathi.ak@gmail.com
+            Nachi Consultation · Guntur, Andhra Pradesh · gopichandt13579@gmail.com
           </div>
         </div>
       `,

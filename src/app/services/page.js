@@ -9,6 +9,7 @@ const SERVICES = [
     title: "Security Services",
     tagline: "Guarding What Matters Most",
     accent: "#1B4332",
+    accentLight: "#6EE7B7",
     tag: "Security",
     photo: "https://images.unsplash.com/photo-1582139329536-e7284fece509?w=800&q=85&fit=crop&crop=faces,center",
     stat: "500+", statLabel: "Sites Secured",
@@ -20,6 +21,7 @@ const SERVICES = [
     title: "Cleaning Services",
     tagline: "Spotless Spaces, Every Time",
     accent: "#7B1D2E",
+    accentLight: "#FCA5A5",
     tag: "Cleaning",
     photo: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=85&fit=crop&crop=faces,center",
     stat: "10K+", statLabel: "Spaces Cleaned",
@@ -31,6 +33,7 @@ const SERVICES = [
     title: "Housekeeping",
     tagline: "Comfort Through Cleanliness",
     accent: "#004C45",
+    accentLight: "#6EE7B7",
     tag: "Housekeeping",
     photo: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=85&fit=crop&crop=center",
     stat: "200+", statLabel: "Happy Clients",
@@ -42,6 +45,7 @@ const SERVICES = [
     title: "Packers & Movers",
     tagline: "Safe Moves, Stress-Free",
     accent: "#5C3317",
+    accentLight: "#FCD34D",
     tag: "Moving",
     photo: "https://images.unsplash.com/photo-1600518464441-9154a4dea21b?w=800&q=85&fit=crop&crop=center",
     stat: "50K+", statLabel: "Items Moved",
@@ -53,6 +57,7 @@ const SERVICES = [
     title: "Driver Services",
     tagline: "Reliable Wheels, On Demand",
     accent: "#1E3A5F",
+    accentLight: "#93C5FD",
     tag: "Driving",
     photo: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=85&fit=crop&crop=center",
     stat: "300+", statLabel: "Expert Drivers",
@@ -85,7 +90,6 @@ function Hero() {
 
   return (
     <section style={{ position:"relative", minHeight:"100vh", display:"flex", alignItems:"center", overflow:"hidden", background:"#070D0B" }}>
-      {/* BG image with ken-burns */}
       <img
         src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1800&q=80&fit=crop"
         alt=""
@@ -96,15 +100,10 @@ function Hero() {
           opacity: 0.35,
         }}
       />
-      {/* gradient */}
       <div style={{ position:"absolute", inset:0, background:"linear-gradient(135deg,rgba(7,13,11,0.97) 0%,rgba(7,13,11,0.75) 50%,rgba(7,13,11,0.4) 100%)" }} />
-      {/* dot grid */}
       <div style={{ position:"absolute", inset:0, backgroundImage:"radial-gradient(rgba(255,255,255,0.04) 1px,transparent 1px)", backgroundSize:"28px 28px", pointerEvents:"none" }} />
 
-      {/* content */}
       <div style={{ position:"relative", zIndex:2, maxWidth:"1200px", margin:"0 auto", padding:"9rem 2rem 5rem", width:"100%" }}>
-
-        {/* eyebrow */}
         <div style={{ display:"flex", alignItems:"center", gap:"0.6rem", marginBottom:"1.5rem",
           opacity: loaded?1:0, transform: loaded?"none":"translateY(16px)",
           transition:"opacity 0.65s ease 0.1s, transform 0.65s ease 0.1s" }}>
@@ -112,10 +111,9 @@ function Hero() {
           <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.72rem", letterSpacing:"0.22em", textTransform:"uppercase", color:"#FF9700", fontWeight:700 }}>Professional Services</span>
         </div>
 
-        {/* headline */}
         <h1 style={{
           fontFamily:"'Playfair Display',serif", fontWeight:900, color:"#fff",
-          fontSize:"clamp(3.5rem,8vw,7rem)", lineHeight:0.95, letterSpacing:"-0.03em",
+          fontSize:"clamp(3rem,8vw,7rem)", lineHeight:0.95, letterSpacing:"-0.03em",
           opacity: loaded?1:0, transform: loaded?"none":"translateY(30px)",
           transition:"opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s",
         }}>
@@ -124,7 +122,7 @@ function Hero() {
         </h1>
 
         <p style={{
-          fontFamily:"'Barlow',sans-serif", fontSize:"1.05rem", lineHeight:1.8,
+          fontFamily:"'Barlow',sans-serif", fontSize:"clamp(0.9rem,2vw,1.05rem)", lineHeight:1.8,
           color:"rgba(255,255,255,0.5)", maxWidth:"440px", marginTop:"1.5rem",
           opacity: loaded?1:0, transform: loaded?"none":"translateY(24px)",
           transition:"opacity 0.75s ease 0.35s, transform 0.75s ease 0.35s",
@@ -132,7 +130,6 @@ function Hero() {
           Five specialised services. Trained, background-verified professionals — placed exactly where you need them.
         </p>
 
-        {/* scroll cue */}
         <div style={{
           marginTop:"3.5rem", display:"flex", alignItems:"center", gap:"0.75rem",
           opacity: loaded?0.5:0, transition:"opacity 0.7s ease 0.7s",
@@ -152,223 +149,299 @@ function Hero() {
   );
 }
 
-/* ─── FLIP CARD ──────────────────────────────────────────── */
-function FlipCard({ svc, delay = 0 }) {
-  const [ref, vis] = useInView(0.1);
-  const [flipped, setFlipped] = useState(false);
+/* ─── SERVICE CARD (Mobile-friendly, no flip on mobile) ─── */
+function ServiceCard({ svc, delay = 0, isMobile }) {
+  const [ref, vis] = useInView(0.08);
+  const [expanded, setExpanded] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  const showBack = isMobile ? expanded : hovered;
 
   return (
     <div
       ref={ref}
       style={{
-        perspective:"1200px",
-        height:"460px",
         opacity: vis?1:0,
-        transform: vis?"translateY(0)":"translateY(48px)",
-        transition:`opacity 0.7s cubic-bezier(.22,1,.36,1) ${delay}s, transform 0.7s cubic-bezier(.22,1,.36,1) ${delay}s`,
-        cursor:"pointer",
+        transform: vis?"translateY(0)":"translateY(40px)",
+        transition:`opacity 0.6s cubic-bezier(.22,1,.36,1) ${delay}s, transform 0.6s cubic-bezier(.22,1,.36,1) ${delay}s`,
       }}
-      onClick={() => setFlipped(f => !f)}
-      onMouseEnter={() => setFlipped(true)}
-      onMouseLeave={() => setFlipped(false)}
     >
-      <div style={{
-        position:"relative", width:"100%", height:"100%",
-        transformStyle:"preserve-3d",
-        transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-        transition:"transform 0.65s cubic-bezier(.22,1,.36,1)",
-      }}>
-
-        {/* ── FRONT: Image card ── */}
+      {isMobile ? (
+        /* ── MOBILE: Accordion Card ── */
         <div style={{
-          position:"absolute", inset:0, backfaceVisibility:"hidden", WebkitBackfaceVisibility:"hidden",
           borderRadius:"16px", overflow:"hidden",
+          border:`1px solid rgba(255,255,255,0.08)`,
+          background:"#111a17",
         }}>
-          {/* photo */}
-          <img
-            src={svc.photo}
-            alt={svc.title}
+          {/* Card Header — always visible */}
+          <div
+            onClick={() => setExpanded(e => !e)}
             style={{
-              width:"100%", height:"100%", objectFit:"cover", display:"block",
-              transform: flipped?"scale(1.06)":"scale(1)",
-              transition:"transform 0.65s cubic-bezier(.22,1,.36,1)",
+              display:"flex", alignItems:"center", gap:"1rem",
+              padding:"1.1rem 1.25rem",
+              cursor:"pointer",
+              background: expanded ? svc.accent : "transparent",
+              transition:"background 0.3s ease",
             }}
-          />
-          {/* gradient overlay */}
-          <div style={{
-            position:"absolute", inset:0,
-            background:"linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.05) 100%)",
-          }} />
-
-          {/* top-left badge */}
-          <div style={{
-            position:"absolute", top:"1.1rem", left:"1.1rem",
-            background: svc.accent,
-            color:"#fff",
-            fontFamily:"'Barlow Condensed',sans-serif",
-            fontWeight:800, fontSize:"0.7rem", letterSpacing:"0.14em",
-            textTransform:"uppercase",
-            padding:"0.35rem 0.85rem",
-            borderRadius:"50px",
-          }}>{svc.tag}</div>
-
-          {/* top-right number */}
-          <div style={{
-            position:"absolute", top:"1rem", right:"1.1rem",
-            fontFamily:"'Barlow Condensed',sans-serif",
-            fontWeight:800, fontSize:"0.7rem", letterSpacing:"0.12em",
-            color:"rgba(255,255,255,0.35)",
-          }}>{svc.id}</div>
-
-          {/* bottom content */}
-          <div style={{ position:"absolute", bottom:0, left:0, right:0, padding:"1.75rem 1.5rem" }}>
-            <p style={{
-              fontFamily:"'Barlow Condensed',sans-serif",
-              fontSize:"0.65rem", letterSpacing:"0.18em",
-              textTransform:"uppercase", color:svc.accent==="#1B4332"?"#6EE7B7":svc.accent==="rgba(7,13,11,0.97)"?"#fff":"#FCA5A5",
-              fontWeight:700, marginBottom:"0.3rem",
-              color:"rgba(255,255,255,0.55)",
-            }}>{svc.tagline}</p>
-            <h3 style={{
-              fontFamily:"'Playfair Display',serif",
-              fontSize:"1.55rem", fontWeight:900,
-              color:"#fff", lineHeight:1.15, letterSpacing:"-0.015em",
-              marginBottom:"0.75rem",
-            }}>{svc.title}</h3>
-
-            {/* stat */}
-            <div style={{ display:"flex", alignItems:"center", gap:"0.75rem" }}>
-              <span style={{
-                fontFamily:"'Barlow Condensed',sans-serif",
-                fontWeight:800, fontSize:"1.6rem",
-                color:"#FF9700", lineHeight:1,
-              }}>{svc.stat}</span>
-              <span style={{
-                fontFamily:"'Barlow',sans-serif",
-                fontSize:"0.7rem", letterSpacing:"0.1em",
-                textTransform:"uppercase", color:"rgba(255,255,255,0.45)",
-              }}>{svc.statLabel}</span>
+          >
+            {/* Photo thumbnail */}
+            <div style={{
+              width:"56px", height:"56px", borderRadius:"10px", overflow:"hidden", flexShrink:0,
+            }}>
+              <img src={svc.photo} alt={svc.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
             </div>
 
-            {/* hint */}
-            <p style={{
-              fontFamily:"'Barlow',sans-serif",
-              fontSize:"0.7rem", color:"rgba(255,255,255,0.35)",
-              marginTop:"0.75rem", letterSpacing:"0.04em",
-            }}>Hover to see details →</p>
-          </div>
-        </div>
-
-        {/* ── BACK: Details ── */}
-        <div style={{
-          position:"absolute", inset:0,
-          backfaceVisibility:"hidden", WebkitBackfaceVisibility:"hidden",
-          transform:"rotateY(180deg)",
-          borderRadius:"16px", overflow:"hidden",
-          background: svc.accent,
-          display:"flex", flexDirection:"column",
-          padding:"2rem",
-        }}>
-          {/* faint pattern */}
-          <div style={{
-            position:"absolute", inset:0,
-            backgroundImage:"radial-gradient(rgba(255,255,255,0.06) 1px,transparent 1px)",
-            backgroundSize:"22px 22px",
-            pointerEvents:"none",
-          }} />
-
-          {/* back content */}
-          <div style={{ position:"relative", zIndex:1, display:"flex", flexDirection:"column", height:"100%" }}>
-            {/* header */}
-            <div style={{ marginBottom:"1.25rem" }}>
+            <div style={{ flex:1, minWidth:0 }}>
               <div style={{
-                display:"inline-block",
-                background:"rgba(255,255,255,0.12)",
-                borderRadius:"50px",
-                padding:"0.3rem 0.85rem",
                 fontFamily:"'Barlow Condensed',sans-serif",
-                fontWeight:700, fontSize:"0.65rem",
-                letterSpacing:"0.16em", textTransform:"uppercase",
-                color:"rgba(255,255,255,0.7)",
-                marginBottom:"0.65rem",
-              }}>{svc.tag}</div>
+                fontSize:"0.6rem", letterSpacing:"0.16em",
+                textTransform:"uppercase", color: expanded ? "rgba(255,255,255,0.6)" : "#FF9700",
+                fontWeight:700, marginBottom:"0.2rem",
+              }}>{svc.tag} · {svc.id}</div>
               <h3 style={{
                 fontFamily:"'Playfair Display',serif",
-                fontSize:"1.4rem", fontWeight:900,
-                color:"#fff", lineHeight:1.15,
-                letterSpacing:"-0.015em",
+                fontSize:"1.1rem", fontWeight:900,
+                color:"#fff", lineHeight:1.2,
+                margin:0,
               }}>{svc.title}</h3>
-              <p style={{
-                fontFamily:"'Barlow',sans-serif",
-                fontSize:"0.82rem", lineHeight:1.7,
-                color:"rgba(255,255,255,0.6)",
-                marginTop:"0.5rem",
-              }}>{svc.desc}</p>
+              <div style={{ display:"flex", alignItems:"center", gap:"0.5rem", marginTop:"0.25rem" }}>
+                <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontWeight:800, fontSize:"1rem", color:"#FF9700" }}>{svc.stat}</span>
+                <span style={{ fontFamily:"'Barlow',sans-serif", fontSize:"0.65rem", color:"rgba(255,255,255,0.4)", textTransform:"uppercase", letterSpacing:"0.08em" }}>{svc.statLabel}</span>
+              </div>
             </div>
 
-            {/* divider */}
-            <div style={{ height:"1px", background:"rgba(255,255,255,0.12)", marginBottom:"1.1rem" }} />
-
-            {/* features grid */}
+            {/* Chevron */}
             <div style={{
-              display:"grid", gridTemplateColumns:"1fr 1fr",
-              gap:"0.45rem", flexGrow:1,
+              width:"28px", height:"28px", borderRadius:"50%",
+              background:"rgba(255,255,255,0.08)",
+              display:"flex", alignItems:"center", justifyContent:"center",
+              flexShrink:0,
+              transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+              transition:"transform 0.3s ease",
             }}>
-              {svc.features.map((f, i) => (
-                <div key={i} style={{
-                  display:"flex", alignItems:"center", gap:"0.45rem",
-                  background:"rgba(255,255,255,0.08)",
-                  borderRadius:"7px", padding:"0.45rem 0.7rem",
-                }}>
-                  <span style={{ width:"5px", height:"5px", borderRadius:"50%", background:"#FF9700", flexShrink:0 }} />
-                  <span style={{ fontFamily:"'Barlow',sans-serif", fontSize:"0.75rem", fontWeight:600, color:"rgba(255,255,255,0.85)" }}>{f}</span>
-                </div>
-              ))}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
             </div>
+          </div>
 
-            {/* CTA */}
-            <Link href="/contact" style={{ textDecoration:"none", marginTop:"1.25rem" }}
-              onClick={e => e.stopPropagation()}>
-              <span style={{
-                display:"flex", alignItems:"center", justifyContent:"center", gap:"0.5rem",
-                background:"#FF9700",
-                color:"#181818",
-                fontFamily:"'Barlow Condensed',sans-serif",
-                fontWeight:800, fontSize:"0.78rem",
-                letterSpacing:"0.15em", textTransform:"uppercase",
-                padding:"0.8rem 1rem",
-                borderRadius:"8px",
+          {/* Expandable details */}
+          <div style={{
+            maxHeight: expanded ? "600px" : "0",
+            overflow:"hidden",
+            transition:"max-height 0.45s cubic-bezier(.22,1,.36,1)",
+          }}>
+            <div style={{
+              padding:"1.25rem",
+              background: svc.accent,
+              borderTop:`1px solid rgba(255,255,255,0.1)`,
+            }}>
+              {/* dot pattern */}
+              <div style={{
+                position:"absolute",
+                backgroundImage:"radial-gradient(rgba(255,255,255,0.05) 1px,transparent 1px)",
+                backgroundSize:"20px 20px",
+                inset:0, pointerEvents:"none",
+              }}/>
+
+              <p style={{
+                fontFamily:"'Barlow',sans-serif", fontSize:"0.85rem", lineHeight:1.75,
+                color:"rgba(255,255,255,0.7)", marginBottom:"1.25rem",
+              }}>{svc.desc}</p>
+
+              {/* Features grid */}
+              <div style={{
+                display:"grid", gridTemplateColumns:"1fr 1fr",
+                gap:"0.45rem", marginBottom:"1.25rem",
               }}>
-                Enquire About This Service <span>→</span>
-              </span>
-            </Link>
+                {svc.features.map((f, i) => (
+                  <div key={i} style={{
+                    display:"flex", alignItems:"center", gap:"0.4rem",
+                    background:"rgba(255,255,255,0.1)",
+                    borderRadius:"7px", padding:"0.45rem 0.65rem",
+                  }}>
+                    <span style={{ width:"5px", height:"5px", borderRadius:"50%", background:"#FF9700", flexShrink:0 }} />
+                    <span style={{ fontFamily:"'Barlow',sans-serif", fontSize:"0.72rem", fontWeight:600, color:"rgba(255,255,255,0.85)" }}>{f}</span>
+                  </div>
+                ))}
+              </div>
+
+              <Link href="/contact" style={{ textDecoration:"none" }}
+                onClick={e => e.stopPropagation()}>
+                <span style={{
+                  display:"flex", alignItems:"center", justifyContent:"center", gap:"0.5rem",
+                  background:"#FF9700", color:"#181818",
+                  fontFamily:"'Barlow Condensed',sans-serif",
+                  fontWeight:800, fontSize:"0.78rem",
+                  letterSpacing:"0.14em", textTransform:"uppercase",
+                  padding:"0.85rem 1rem", borderRadius:"8px",
+                }}>
+                  Enquire About This Service →
+                </span>
+              </Link>
+            </div>
           </div>
         </div>
 
-      </div>
+      ) : (
+        /* ── DESKTOP: Flip Card ── */
+        <div
+          style={{
+            perspective:"1200px",
+            height:"460px",
+            cursor:"pointer",
+          }}
+          onClick={() => setHovered(h => !h)}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+        >
+          <div style={{
+            position:"relative", width:"100%", height:"100%",
+            transformStyle:"preserve-3d",
+            transform: showBack ? "rotateY(180deg)" : "rotateY(0deg)",
+            transition:"transform 0.65s cubic-bezier(.22,1,.36,1)",
+          }}>
+
+            {/* FRONT */}
+            <div style={{
+              position:"absolute", inset:0, backfaceVisibility:"hidden", WebkitBackfaceVisibility:"hidden",
+              borderRadius:"16px", overflow:"hidden",
+            }}>
+              <img src={svc.photo} alt={svc.title} style={{
+                width:"100%", height:"100%", objectFit:"cover", display:"block",
+                transform: showBack?"scale(1.06)":"scale(1)",
+                transition:"transform 0.65s cubic-bezier(.22,1,.36,1)",
+              }} />
+              <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.05) 100%)" }} />
+
+              <div style={{
+                position:"absolute", top:"1.1rem", left:"1.1rem",
+                background: svc.accent, color:"#fff",
+                fontFamily:"'Barlow Condensed',sans-serif",
+                fontWeight:800, fontSize:"0.7rem", letterSpacing:"0.14em",
+                textTransform:"uppercase", padding:"0.35rem 0.85rem", borderRadius:"50px",
+              }}>{svc.tag}</div>
+
+              <div style={{
+                position:"absolute", top:"1rem", right:"1.1rem",
+                fontFamily:"'Barlow Condensed',sans-serif",
+                fontWeight:800, fontSize:"0.7rem", letterSpacing:"0.12em",
+                color:"rgba(255,255,255,0.35)",
+              }}>{svc.id}</div>
+
+              <div style={{ position:"absolute", bottom:0, left:0, right:0, padding:"1.75rem 1.5rem" }}>
+                <p style={{
+                  fontFamily:"'Barlow Condensed',sans-serif",
+                  fontSize:"0.65rem", letterSpacing:"0.18em",
+                  textTransform:"uppercase", color:"rgba(255,255,255,0.55)",
+                  fontWeight:700, marginBottom:"0.3rem",
+                }}>{svc.tagline}</p>
+                <h3 style={{
+                  fontFamily:"'Playfair Display',serif",
+                  fontSize:"1.55rem", fontWeight:900,
+                  color:"#fff", lineHeight:1.15, letterSpacing:"-0.015em",
+                  marginBottom:"0.75rem",
+                }}>{svc.title}</h3>
+                <div style={{ display:"flex", alignItems:"center", gap:"0.75rem" }}>
+                  <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontWeight:800, fontSize:"1.6rem", color:"#FF9700", lineHeight:1 }}>{svc.stat}</span>
+                  <span style={{ fontFamily:"'Barlow',sans-serif", fontSize:"0.7rem", letterSpacing:"0.1em", textTransform:"uppercase", color:"rgba(255,255,255,0.45)" }}>{svc.statLabel}</span>
+                </div>
+                <p style={{ fontFamily:"'Barlow',sans-serif", fontSize:"0.7rem", color:"rgba(255,255,255,0.35)", marginTop:"0.75rem", letterSpacing:"0.04em" }}>Hover to see details →</p>
+              </div>
+            </div>
+
+            {/* BACK */}
+            <div style={{
+              position:"absolute", inset:0,
+              backfaceVisibility:"hidden", WebkitBackfaceVisibility:"hidden",
+              transform:"rotateY(180deg)",
+              borderRadius:"16px", overflow:"hidden",
+              background: svc.accent,
+              display:"flex", flexDirection:"column",
+              padding:"2rem",
+            }}>
+              <div style={{ position:"absolute", inset:0, backgroundImage:"radial-gradient(rgba(255,255,255,0.06) 1px,transparent 1px)", backgroundSize:"22px 22px", pointerEvents:"none" }} />
+              <div style={{ position:"relative", zIndex:1, display:"flex", flexDirection:"column", height:"100%" }}>
+                <div style={{ marginBottom:"1.25rem" }}>
+                  <div style={{
+                    display:"inline-block", background:"rgba(255,255,255,0.12)",
+                    borderRadius:"50px", padding:"0.3rem 0.85rem",
+                    fontFamily:"'Barlow Condensed',sans-serif",
+                    fontWeight:700, fontSize:"0.65rem", letterSpacing:"0.16em",
+                    textTransform:"uppercase", color:"rgba(255,255,255,0.7)", marginBottom:"0.65rem",
+                  }}>{svc.tag}</div>
+                  <h3 style={{
+                    fontFamily:"'Playfair Display',serif",
+                    fontSize:"1.4rem", fontWeight:900, color:"#fff",
+                    lineHeight:1.15, letterSpacing:"-0.015em",
+                  }}>{svc.title}</h3>
+                  <p style={{ fontFamily:"'Barlow',sans-serif", fontSize:"0.82rem", lineHeight:1.7, color:"rgba(255,255,255,0.6)", marginTop:"0.5rem" }}>{svc.desc}</p>
+                </div>
+                <div style={{ height:"1px", background:"rgba(255,255,255,0.12)", marginBottom:"1.1rem" }} />
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0.45rem", flexGrow:1 }}>
+                  {svc.features.map((f, i) => (
+                    <div key={i} style={{
+                      display:"flex", alignItems:"center", gap:"0.45rem",
+                      background:"rgba(255,255,255,0.08)", borderRadius:"7px", padding:"0.45rem 0.7rem",
+                    }}>
+                      <span style={{ width:"5px", height:"5px", borderRadius:"50%", background:"#FF9700", flexShrink:0 }} />
+                      <span style={{ fontFamily:"'Barlow',sans-serif", fontSize:"0.75rem", fontWeight:600, color:"rgba(255,255,255,0.85)" }}>{f}</span>
+                    </div>
+                  ))}
+                </div>
+                <Link href="/contact" style={{ textDecoration:"none", marginTop:"1.25rem" }} onClick={e => e.stopPropagation()}>
+                  <span style={{
+                    display:"flex", alignItems:"center", justifyContent:"center", gap:"0.5rem",
+                    background:"#FF9700", color:"#181818",
+                    fontFamily:"'Barlow Condensed',sans-serif",
+                    fontWeight:800, fontSize:"0.78rem", letterSpacing:"0.15em", textTransform:"uppercase",
+                    padding:"0.8rem 1rem", borderRadius:"8px",
+                  }}>
+                    Enquire About This Service <span>→</span>
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-/* ─── CARDS GRID SECTION ─────────────────────────────────── */
+/* ─── CARDS SECTION ──────────────────────────────────────── */
 function CardsSection() {
   const [titleRef, titleVis] = useInView(0.2);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   return (
-    <section style={{ background:"#0E1512", padding:"6rem 2rem" }}>
+    <section style={{ background:"#0E1512", padding:"clamp(3rem,6vw,6rem) clamp(1rem,4vw,2rem)" }}>
       <div style={{ maxWidth:"1200px", margin:"0 auto" }}>
 
-        {/* section header */}
-        <div style={{ display:"flex", alignItems:"flex-end", justifyContent:"space-between", flexWrap:"wrap", gap:"1.5rem", marginBottom:"3.5rem" }}>
+        {/* Section header */}
+        <div style={{
+          display:"flex", alignItems:"flex-end", justifyContent:"space-between",
+          flexWrap:"wrap", gap:"1rem", marginBottom:"clamp(2rem,4vw,3.5rem)"
+        }}>
           <div ref={titleRef}>
-            <div style={{ display:"flex", alignItems:"center", gap:"0.6rem", marginBottom:"0.6rem",
+            <div style={{
+              display:"flex", alignItems:"center", gap:"0.6rem", marginBottom:"0.6rem",
               opacity:titleVis?1:0, transform:titleVis?"none":"translateY(14px)",
-              transition:"opacity 0.55s ease, transform 0.55s ease" }}>
+              transition:"opacity 0.55s ease, transform 0.55s ease"
+            }}>
               <span style={{ width:"22px", height:"2px", background:"#FF9700" }} />
               <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.7rem", letterSpacing:"0.22em", textTransform:"uppercase", color:"#FF9700", fontWeight:700 }}>All Services</span>
             </div>
             <h2 style={{
               fontFamily:"'Playfair Display',serif",
-              fontSize:"clamp(2rem,3.5vw,3rem)", fontWeight:900,
+              fontSize:"clamp(1.8rem,3.5vw,3rem)", fontWeight:900,
               color:"#fff", letterSpacing:"-0.02em", lineHeight:1.1,
               opacity:titleVis?1:0, transform:titleVis?"none":"translateY(18px)",
               transition:"opacity 0.65s ease 0.08s, transform 0.65s ease 0.08s",
@@ -381,25 +454,36 @@ function CardsSection() {
             color:"rgba(255,255,255,0.35)", maxWidth:"280px", lineHeight:1.75,
             opacity:titleVis?1:0, transition:"opacity 0.65s ease 0.2s",
           }}>
-            Hover each card to see full details, features and enquiry option.
+            {isMobile ? "Tap each card to see full details and enquiry option." : "Hover each card to see full details, features and enquiry option."}
           </p>
         </div>
 
-        {/* 3 + 2 grid */}
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"1.25rem" }}>
-          {SERVICES.slice(0,3).map((svc,i) => <FlipCard key={svc.id} svc={svc} delay={i*0.1} />)}
-        </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:"1.25rem", marginTop:"1.25rem" }}>
-          {SERVICES.slice(3).map((svc,i) => <FlipCard key={svc.id} svc={svc} delay={i*0.1+0.2} />)}
-        </div>
+        {/* MOBILE: Single column stack */}
+        {isMobile ? (
+          <div style={{ display:"flex", flexDirection:"column", gap:"0.85rem" }}>
+            {SERVICES.map((svc, i) => (
+              <ServiceCard key={svc.id} svc={svc} delay={i * 0.07} isMobile={true} />
+            ))}
+          </div>
+        ) : (
+          /* DESKTOP: 3+2 grid */
+          <>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"1.25rem" }}>
+              {SERVICES.slice(0,3).map((svc,i) => <ServiceCard key={svc.id} svc={svc} delay={i*0.1} isMobile={false} />)}
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:"1.25rem", marginTop:"1.25rem" }}>
+              {SERVICES.slice(3).map((svc,i) => <ServiceCard key={svc.id} svc={svc} delay={i*0.1+0.2} isMobile={false} />)}
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
 }
 
-/* ─── WHY US STRIP ───────────────────────────────────────── */
+/* ─── WHY US ─────────────────────────────────────────────── */
 function WhyUs() {
-  const [ref, vis] = useInView(0.15);
+  const [ref, vis] = useInView(0.1);
   const items = [
     { icon:"🔍", t:"Background Verified", d:"Every staff member is police-verified before deployment." },
     { icon:"⚡", t:"Fast Deployment", d:"Trained staff placed within 24–48 hours of request." },
@@ -407,9 +491,13 @@ function WhyUs() {
     { icon:"📞", t:"24/7 Support", d:"Our supervisors are available around the clock." },
   ];
   return (
-    <section style={{ background:"#F3F4EC", padding:"5.5rem 2rem" }}>
+    <section style={{ background:"#F3F4EC", padding:"clamp(3rem,6vw,5.5rem) clamp(1rem,4vw,2rem)" }}>
       <div style={{ maxWidth:"1200px", margin:"0 auto" }}>
-        <div ref={ref} style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"1.5rem" }}>
+        <div ref={ref} style={{
+          display:"grid",
+          gridTemplateColumns:"repeat(auto-fit, minmax(200px, 1fr))",
+          gap:"clamp(1.5rem,3vw,2rem)",
+        }}>
           {items.map((it,i) => (
             <div key={i} style={{
               opacity: vis?1:0,
@@ -429,7 +517,7 @@ function WhyUs() {
 
 /* ─── HIRING ─────────────────────────────────────────────── */
 function Hiring() {
-  const [ref, vis] = useInView(0.15);
+  const [ref, vis] = useInView(0.1);
   const [hov, setHov] = useState(false);
   return (
     <section style={{ position:"relative", overflow:"hidden", minHeight:"420px", display:"flex", alignItems:"center" }}>
@@ -442,7 +530,9 @@ function Hiring() {
 
       <div ref={ref} style={{
         position:"relative", zIndex:2,
-        maxWidth:"1200px", margin:"0 auto", padding:"5rem 2rem", width:"100%",
+        maxWidth:"1200px", margin:"0 auto",
+        padding:"clamp(3rem,6vw,5rem) clamp(1rem,4vw,2rem)",
+        width:"100%",
         opacity:vis?1:0, transform:vis?"none":"translateY(28px)",
         transition:"opacity 0.8s ease, transform 0.8s ease",
       }}>
@@ -450,10 +540,18 @@ function Hiring() {
           <span style={{ width:"22px", height:"2px", background:"#FF9700" }} />
           <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.7rem", letterSpacing:"0.2em", textTransform:"uppercase", color:"#FF9700", fontWeight:700 }}>Join Our Team</span>
         </div>
-        <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(2rem,4vw,3.2rem)", fontWeight:900, color:"#fff", lineHeight:1.1, letterSpacing:"-0.02em", marginBottom:"0.85rem" }}>
+        <h2 style={{
+          fontFamily:"'Playfair Display',serif",
+          fontSize:"clamp(1.8rem,4vw,3.2rem)", fontWeight:900,
+          color:"#fff", lineHeight:1.1, letterSpacing:"-0.02em", marginBottom:"0.85rem"
+        }}>
           Looking for <span style={{ color:"#FF9700", fontStyle:"italic" }}>a Job?</span>
         </h2>
-        <p style={{ fontFamily:"'Barlow',sans-serif", fontSize:"0.93rem", lineHeight:1.78, color:"rgba(255,255,255,0.5)", maxWidth:"400px", marginBottom:"2rem" }}>
+        <p style={{
+          fontFamily:"'Barlow',sans-serif",
+          fontSize:"clamp(0.85rem,2vw,0.93rem)", lineHeight:1.78,
+          color:"rgba(255,255,255,0.5)", maxWidth:"400px", marginBottom:"2rem"
+        }}>
           Skilled in security, cleaning, driving or logistics? Upload your resume — we'll match you with the right employer across India.
         </p>
         <Link href="/contact" style={{ textDecoration:"none" }}>
@@ -462,7 +560,8 @@ function Hiring() {
             onMouseLeave={() => setHov(false)}
             style={{
               display:"inline-flex", alignItems:"center", gap:"0.65rem",
-              fontFamily:"'Barlow Condensed',sans-serif", fontWeight:800, fontSize:"0.82rem",
+              fontFamily:"'Barlow Condensed',sans-serif", fontWeight:800,
+              fontSize:"clamp(0.75rem,2vw,0.82rem)",
               letterSpacing:"0.16em", textTransform:"uppercase",
               color: hov?"#181818":"#fff",
               background: hov?"#FF9700":"transparent",
@@ -487,19 +586,7 @@ export default function ServicesPage() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap');
         *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-
-        @media(max-width:900px){
-          .cards-3 { grid-template-columns: repeat(2,1fr) !important; }
-          .cards-2 { grid-template-columns: 1fr !important; }
-          .why-grid { grid-template-columns: repeat(2,1fr) !important; }
-        }
-        @media(max-width:560px){
-          .cards-3 { grid-template-columns: 1fr !important; }
-          .cards-2 { grid-template-columns: 1fr !important; }
-          .why-grid { grid-template-columns: 1fr !important; }
-        }
       `}</style>
-
       <Hero />
       <CardsSection />
       <WhyUs />
