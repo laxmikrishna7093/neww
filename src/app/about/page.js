@@ -6,7 +6,6 @@ const values = [
   { icon: '✅', title: 'Verified & Trusted', desc: 'Every candidate undergoes background checks, skills assessments, and identity verification.' },
   { icon: '⚡', title: 'Fast & Reliable', desc: 'We deliver staffing solutions within 24–48 hours without compromising on quality.' },
   { icon: '🤝', title: 'People First', desc: 'Employers and employees are equally important. We build long-term relationships that last.' },
-  { icon: '🌐', title: 'Pan-India Reach', desc: 'With a network across 10+ cities, we operate across Andhra Pradesh and beyond.' },
   { icon: '📈', title: 'Growth-Oriented', desc: 'We not only place people in jobs but provide guidance for career advancement too.' },
 ];
 
@@ -26,16 +25,14 @@ export default function AboutPage() {
           --ink:    #1C2B28;
           --gray:   #6B7B74;
           --white:  #ffffff;
-          --slate:  #1E2D2A;
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         /* ── ANIMATIONS ── */
-        @keyframes heroIn   { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes scaleIn  { from{opacity:0;transform:scale(.92)}       to{opacity:1;transform:scale(1)} }
-        @keyframes rotateSlow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-        @keyframes floatY   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
-        @keyframes shimmerLine { 0%{background-position:-200% center} 100%{background-position:200% center} }
+        @keyframes heroIn      { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes scaleIn     { from{opacity:0;transform:scale(.92)}       to{opacity:1;transform:scale(1)} }
+        @keyframes rotateSlow  { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        @keyframes floatY      { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
 
         /* ══════════════════════════════
            HERO
@@ -54,7 +51,6 @@ export default function AboutPage() {
             linear-gradient(90deg,rgba(255,255,255,.022) 1px, transparent 1px);
           background-size: 70px 70px;
         }
-        /* subtle glow orbs — NO border bubbles */
         .hero-glow {
           position:absolute; inset:0; pointer-events:none; z-index:1;
         }
@@ -62,7 +58,6 @@ export default function AboutPage() {
         .hg-1 { width:500px;height:500px; top:-160px;right:-120px; background:rgba(255,151,0,.07); }
         .hg-2 { width:350px;height:350px; bottom:-80px;left:-80px;  background:rgba(0,104,95,.1); }
         .hg-3 { width:180px;height:180px; top:42%;left:28%; background:rgba(237,215,144,.06); }
-        /* one thin rotating ring only */
         .hero-ring {
           position:absolute; border-radius:50%;
           border:1px dashed rgba(255,151,0,.1);
@@ -141,7 +136,7 @@ export default function AboutPage() {
         }
         .btn-ghost-w:hover{border-color:var(--amber);color:var(--amber)}
 
-        /* hero right — photo collage using Unsplash */
+        /* hero right — photo collage */
         .ab-collage {
           position:relative; height:560px;
           animation:scaleIn .9s ease .35s both;
@@ -170,34 +165,7 @@ export default function AboutPage() {
         .cr-a{width:90px;height:90px;bottom:40px;right:152px;animation-duration:20s}
         .cr-b{width:52px;height:52px;top:110px;left:8px;animation-duration:14s;animation-direction:reverse;border-color:rgba(0,104,95,.25)}
 
-        /* ══════════════════════════════
-           STAT RIBBON — dark forest bg
-        ══════════════════════════════ */
-        .stat-ribbon {
-          background:var(--slate); position:relative; overflow:hidden;
-        }
-        .stat-ribbon::before {
-          content:''; position:absolute; inset:0;
-          background:repeating-linear-gradient(-55deg,transparent,transparent 20px,rgba(255,255,255,.012) 20px,rgba(255,255,255,.012) 40px);
-        }
-        .stat-ribbon::after {
-          content:''; position:absolute; bottom:0;left:0;right:0; height:2px;
-          background:linear-gradient(90deg,var(--amber),var(--teal),var(--amber));
-          background-size:200% auto; animation:shimmerLine 4s linear infinite;
-        }
-        .sr-inner {
-          max-width:1240px; margin:0 auto; padding:0 2.5rem;
-          display:grid; grid-template-columns:repeat(4,1fr);
-          position:relative; z-index:1;
-        }
-        .sr-cell {
-          padding:2.75rem 1.5rem; text-align:center;
-          border-right:1px solid rgba(255,255,255,.06); transition:background .3s;
-        }
-        .sr-cell:last-child{border-right:none}
-        .sr-cell:hover{background:rgba(255,255,255,.03)}
-        .sr-num{font-family:'Bebas Neue',sans-serif;font-size:3.8rem;color:var(--amber);line-height:1;display:block;letter-spacing:.02em}
-        .sr-lbl{font-family:'DM Sans',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.38);display:block;margin-top:.35rem}
+
 
         /* ══════════════════════════════
            STORY
@@ -210,7 +178,6 @@ export default function AboutPage() {
           content:''; position:absolute; top:0;left:0;right:0;height:4px;
           background:linear-gradient(90deg,var(--amber),var(--teal));
         }
-        /* soft ambient glow, no borders */
         .story-glow{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
         .sg-1{width:340px;height:340px;top:-100px;right:-80px;background:rgba(255,151,0,.06)}
         .sg-2{width:200px;height:200px;bottom:-50px;left:3%;background:rgba(0,104,95,.07)}
@@ -226,7 +193,6 @@ export default function AboutPage() {
         }
         .si-frame img{width:100%;height:100%;object-fit:cover;display:block}
 
-        /* caption overlay at bottom */
         .si-caption{
           position:absolute;bottom:0;left:0;right:0;
           background:linear-gradient(to top,rgba(18,49,44,.92),transparent);
@@ -241,7 +207,6 @@ export default function AboutPage() {
           font-size:1.05rem;color:rgba(255,255,255,.85)
         }
 
-        /* floating quote card */
         .si-quote-card{
           position:absolute;bottom:-28px;right:-28px;
           background:var(--forest);color:var(--white);
@@ -297,7 +262,6 @@ export default function AboutPage() {
           background:var(--forest);padding:8rem 0;
           position:relative;overflow:hidden
         }
-        /* two soft radial glows, no bubble borders */
         .values-glow{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none}
         .vg-1{width:500px;height:500px;top:-160px;left:-140px;background:rgba(0,104,95,.13)}
         .vg-2{width:300px;height:300px;bottom:-80px;right:-60px;background:rgba(255,151,0,.08)}
@@ -318,7 +282,6 @@ export default function AboutPage() {
           line-height:1.88;color:rgba(255,255,255,.4);padding-top:.75rem
         }
 
-        /* 3-col grid with photo + text cards alternating */
         .val-magazine{
           display:grid;
           grid-template-columns:repeat(3,1fr);
@@ -332,7 +295,6 @@ export default function AboutPage() {
           transition:background .3s;
         }
         .val-card:hover{background:rgba(255,255,255,.04)}
-        /* amber top accent line on hover */
         .val-card::before{
           content:'';position:absolute;top:0;left:0;right:0;height:2px;
           background:var(--amber);transform:scaleX(0);transform-origin:left;
@@ -340,7 +302,6 @@ export default function AboutPage() {
         }
         .val-card:hover::before{transform:scaleX(1)}
 
-        /* large icon displayed as image-like square */
         .val-img-block{
           width:100%;aspect-ratio:16/9;
           display:flex;align-items:center;justify-content:center;
@@ -398,7 +359,6 @@ export default function AboutPage() {
         .p-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:.38rem}
         .p-txt strong{color:var(--ink);font-weight:600;display:block;margin-bottom:.12rem}
 
-        /* Photo mosaic — real images */
         .why-mosaic{position:relative}
         .mosaic{
           display:grid;
@@ -433,13 +393,10 @@ export default function AboutPage() {
           .story-grid,.why-grid{grid-template-columns:1fr;gap:3rem}
           .values-hd{grid-template-columns:1fr;gap:1.5rem}
           .val-magazine{grid-template-columns:repeat(2,1fr)}
-          .sr-inner{grid-template-columns:repeat(2,1fr)}
-          .sr-cell{border-bottom:1px solid rgba(255,255,255,.06)}
           .si-quote-card{position:relative;right:auto;bottom:auto;margin-top:1rem;width:100%}
         }
         @media(max-width:640px){
           .val-magazine{grid-template-columns:1fr}
-          .sr-inner{grid-template-columns:1fr 1fr}
           .mosaic{grid-template-columns:1fr;grid-template-rows:200px 200px 200px}
           .mc:first-child{grid-row:auto}
           .ab-hero{padding:7rem 0 5rem}
@@ -456,10 +413,14 @@ export default function AboutPage() {
         <div className="ab-hero-inner">
           {/* LEFT TEXT */}
           <div>
-            
+            <div className="ab-breadcrumb">
+              <Link href="/">Home</Link>
+              <span className="ab-bc-sep">/</span>
+              About Us
+            </div>
             <div className="ab-eyebrow">
               <span className="ab-eyebrow-line"/>
-              Nachi Consultation · Est. 2020
+              Nachi Consultant Pvt. Ltd. · Est. 2020
             </div>
             <h1 className="ab-hero-title">
               We Give Every<br/>
@@ -467,7 +428,7 @@ export default function AboutPage() {
               a <span className="soft">Fair Chance.</span>
             </h1>
             <p className="ab-hero-desc">
-              Founded in <strong>Visakhapatnam</strong> by <strong>Mr. Naidu</strong>, Nachi Consultation connects hardworking people across Andhra Pradesh with employers who value reliability, honesty, and dedication — delivered in 24 to 48 hours.
+              Founded in <strong>Visakhapatnam</strong> by <strong>Mr. Naidu</strong>, Nachi Consultant Pvt. Ltd. connects hardworking people across Andhra Pradesh with employers who value reliability, honesty, and dedication — delivered in 24 to 48 hours.
             </p>
             <div className="ab-hero-btns">
               <Link href="/contact" className="btn-amber"><span>Find Jobs Now</span><span>→</span></Link>
@@ -495,28 +456,26 @@ export default function AboutPage() {
                 alt="Visakhapatnam city"
               />
             </div>
-            <div className="coll-badge cb-a"><span className="cb-big">500+</span><span className="cb-sm">Lives Placed</span></div>
-            <div className="coll-badge cb-b"><span className="cb-big">48h</span><span className="cb-sm">Avg. Placement</span></div>
-            <div className="coll-ring cr-a"/><div className="coll-ring cr-b"/>
+            <div className="coll-badge cb-a">
+              <span className="cb-big">500+</span>
+              <span className="cb-sm">Lives Placed</span>
+            </div>
+            <div className="coll-badge cb-b">
+              <span className="cb-big">48h</span>
+              <span className="cb-sm">Avg. Placement</span>
+            </div>
+            <div className="coll-ring cr-a"/>
+            <div className="coll-ring cr-b"/>
           </div>
         </div>
       </section>
 
-      {/* ══ STAT RIBBON — dark not orange ══ */}
-      <div className="stat-ribbon">
-        <div className="sr-inner">
-          {[['500+','Placements Done'],['60+','Companies Served'],['5+','Years of Service'],['10+','Cities Covered']].map(([n,l],i)=>(
-            <div key={i} className="sr-cell">
-              <span className="sr-num">{n}</span>
-              <span className="sr-lbl">{l}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+
 
       {/* ══ STORY ══ */}
       <section className="story-sec">
-        <div className="story-glow sg-1"/><div className="story-glow sg-2"/>
+        <div className="story-glow sg-1"/>
+        <div className="story-glow sg-2"/>
         <div className="story-wrap">
           <div className="story-grid">
             {/* Left photo */}
@@ -524,11 +483,11 @@ export default function AboutPage() {
               <div className="si-frame">
                 <img
                   src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=800&q=80"
-                  alt="Nachi Consultation office"
+                  alt="Nachi Consultant office"
                 />
                 <div className="si-caption">
                   <div className="si-caption-label">Headquarters</div>
-                  <div className="si-caption-val">Visakhapatnam, Andhra Pradesh</div>
+                  <div className="si-caption-val">Muralinagar, Visakhapatnam, Andhra Pradesh</div>
                 </div>
               </div>
               <div className="si-quote-card">
@@ -536,12 +495,13 @@ export default function AboutPage() {
                 <span className="sqc-by">— Mr. Naidu, Founder</span>
               </div>
             </div>
+
             {/* Right text */}
             <div>
               <p className="sec-tag">Our Story</p>
               <h2 className="story-title">Born in Vizag.<br/>Built for <em>India's Workers.</em></h2>
               <div className="story-body">
-                <p>Nachi Consultation was founded by <strong>Mr. Naidu</strong> in <strong>Visakhapatnam, Andhra Pradesh</strong> — a city that knows the value of hard work and honest living. Having witnessed capable workers remain unemployed simply due to lack of connections, he built something different.</p>
+                <p>Nachi Consultant Pvt. Ltd. was founded by <strong>Mr. Naidu</strong> in <strong>Visakhapatnam, Andhra Pradesh</strong> — a city that knows the value of hard work and honest living. Having witnessed capable workers remain unemployed simply due to lack of connections, he built something different.</p>
                 <p>A placement agency rooted in <strong>trust, speed, and dignity</strong>. No algorithms. No bureaucracy. Real humans matching real workers with employers who need them within <strong>24 to 48 hours</strong>.</p>
                 <p>Since 2020, we have placed over <strong>500 individuals</strong> across security, cleaning, housekeeping, packing, and driver services — partnering with <strong>60+ companies</strong> across <strong>10+ cities</strong> in Andhra Pradesh and beyond.</p>
                 <p>Every number is a family. Every placement is a story of hope fulfilled.</p>
@@ -558,9 +518,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ══ VALUES — magazine style with photos, no numbering ══ */}
+      {/* ══ VALUES — magazine style with photos ══ */}
       <section className="values-sec">
-        <div className="values-glow vg-1"/><div className="values-glow vg-2"/>
+        <div className="values-glow vg-1"/>
+        <div className="values-glow vg-2"/>
         <div className="values-wrap">
           <div className="values-hd">
             <div>
@@ -571,61 +532,60 @@ export default function AboutPage() {
           </div>
 
           <div className="val-magazine">
-            {/* Card 1 — with photo header */}
+            {/* Card 1 */}
             <div className="val-card">
               <div className="val-img-block">
                 <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&q=80" alt="Mission"/>
-                <div className="vi-overlay"/><span className="vi-label">Our Purpose</span>
+                <div className="vi-overlay"/>
+                <span className="vi-label">Our Purpose</span>
               </div>
               <span className="val-icon">🎯</span>
               <h3 className="val-ttl">Mission-Driven</h3>
               <p className="val-desc">We exist to reduce unemployment and give every worker a fair chance at dignified employment.</p>
             </div>
+
             {/* Card 2 */}
             <div className="val-card">
               <div className="val-img-block">
                 <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80" alt="Verification"/>
-                <div className="vi-overlay"/><span className="vi-label">Background Check</span>
+                <div className="vi-overlay"/>
+                <span className="vi-label">Background Check</span>
               </div>
               <span className="val-icon">✅</span>
               <h3 className="val-ttl">Verified &amp; Trusted</h3>
               <p className="val-desc">Every candidate undergoes background checks, skills assessments, and identity verification.</p>
             </div>
+
             {/* Card 3 */}
             <div className="val-card">
               <div className="val-img-block">
                 <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80" alt="Speed"/>
-                <div className="vi-overlay"/><span className="vi-label">24–48 Hour Delivery</span>
+                <div className="vi-overlay"/>
+                <span className="vi-label">24–48 Hour Delivery</span>
               </div>
               <span className="val-icon">⚡</span>
               <h3 className="val-ttl">Fast &amp; Reliable</h3>
               <p className="val-desc">We deliver staffing solutions within 24–48 hours without compromising on quality.</p>
             </div>
+
             {/* Card 4 */}
             <div className="val-card">
               <div className="val-img-block">
                 <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=600&q=80" alt="People first"/>
-                <div className="vi-overlay"/><span className="vi-label">Human Connection</span>
+                <div className="vi-overlay"/>
+                <span className="vi-label">Human Connection</span>
               </div>
               <span className="val-icon">🤝</span>
               <h3 className="val-ttl">People First</h3>
               <p className="val-desc">Employers and employees are equally important. We build long-term relationships that last.</p>
             </div>
-            {/* Card 5 */}
-            <div className="val-card">
-              <div className="val-img-block">
-                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&q=80" alt="India reach"/>
-                <div className="vi-overlay"/><span className="vi-label">10+ Cities</span>
-              </div>
-              <span className="val-icon">🌐</span>
-              <h3 className="val-ttl">Pan-India Reach</h3>
-              <p className="val-desc">With a network across 10+ cities, we operate across Andhra Pradesh and beyond.</p>
-            </div>
+
             {/* Card 6 */}
             <div className="val-card">
               <div className="val-img-block">
                 <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80" alt="Growth"/>
-                <div className="vi-overlay"/><span className="vi-label">Career Advancement</span>
+                <div className="vi-overlay"/>
+                <span className="vi-label">Career Advancement</span>
               </div>
               <span className="val-icon">📈</span>
               <h3 className="val-ttl">Growth-Oriented</h3>
@@ -637,7 +597,8 @@ export default function AboutPage() {
 
       {/* ══ WHY WE EXIST ══ */}
       <section className="why-sec">
-        <div className="why-glow wg-1"/><div className="why-glow wg-2"/>
+        <div className="why-glow wg-1"/>
+        <div className="why-glow wg-2"/>
         <div className="why-wrap">
           <div className="why-grid">
             {/* Text */}
@@ -645,19 +606,22 @@ export default function AboutPage() {
               <p className="sec-tag">Why We Exist</p>
               <h2 className="why-title">Connecting <em>Ambition</em><br/>With Opportunity</h2>
               <div className="why-body">
-                <p>Millions of skilled, willing workers across India remain unemployed — not because they lack ability, but because no one gave them a fair platform. Nachi Consultation was created to change that reality, one placement at a time.</p>
+                <p>Millions of skilled, willing workers across India remain unemployed — not because they lack ability, but because no one gave them a fair platform. Nachi Consultant Pvt. Ltd. was created to change that reality, one placement at a time.</p>
                 <p>We work across five core service categories, ensuring workers and employers always get exactly what they need.</p>
               </div>
               <ul className="pillar-list">
                 {[
-                  {title:'Security Services',      desc:'Trained, verified guards for offices, malls & residences.'},
-                  {title:'Cleaning & Housekeeping', desc:'Professional staff for corporate, hotel, and home settings.'},
-                  {title:'Packers & Movers',        desc:'Skilled logistics teams for household and commercial moves.'},
-                  {title:'Driver Services',         desc:'Licensed, background-checked drivers for any requirement.'},
-                ].map((p,i)=>(
+                  { title: 'Security Services',       desc: 'Trained, verified guards for offices, malls & residences.' },
+                  { title: 'Cleaning & Housekeeping',  desc: 'Professional staff for corporate, hotel, and home settings.' },
+                  { title: 'Packers & Movers',         desc: 'Skilled logistics teams for household and commercial moves.' },
+                  { title: 'Driver Services',          desc: 'Licensed, background-checked drivers for any requirement.' },
+                ].map((p, i) => (
                   <li key={i} className="pillar-item">
                     <span className="p-dot"/>
-                    <div className="p-txt"><strong>{p.title}</strong>{p.desc}</div>
+                    <div className="p-txt">
+                      <strong>{p.title}</strong>
+                      {p.desc}
+                    </div>
                   </li>
                 ))}
               </ul>

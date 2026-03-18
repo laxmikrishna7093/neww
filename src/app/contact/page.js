@@ -49,24 +49,16 @@ export default function ContactPage() {
     handleFile(e.dataTransfer.files[0]);
   };
 
-  // ✅ FIXED: Actually calls the API route
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
-
     try {
       const data = new FormData();
       Object.entries(formData).forEach(([key, value]) => data.append(key, value));
       if (resumeFile) data.append('resume', resumeFile);
-
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        body: data,
-      });
-
+      const res = await fetch('/api/contact', { method: 'POST', body: data });
       const result = await res.json();
-
       if (result.success) {
         setSubmitted(true);
       } else {
@@ -81,36 +73,55 @@ export default function ContactPage() {
 
   const contactCards = [
     {
-      icon: '📍',
-      label: 'Our Office',
-      value: '34/145, 1st Line Saradha Colony,\nGuntur – 522002, Andhra Pradesh',
-      href: 'https://www.google.com/maps/search/Saradha+Colony+Guntur+522002',
-      linkText: 'Get Directions →',
-      color: '#FF9700',
-    },
-    {
-      icon: '📞',
-      label: 'Call Us',
-      value: '+91 63056 50469',
-      href: 'tel:+916305650469',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF9700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.54a16 16 0 0 0 5.55 5.55l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/>
+        </svg>
+      ),
+      label: 'PHONE',
+      value: '+91 90101 33301',
+      href: 'tel:+919010133301',
       linkText: 'Call Now →',
-      color: '#00685F',
+      iconBg: '#fff4e6',
     },
     {
-      icon: '✉️',
-      label: 'Email Us',
-      value: 'nagalakshmiakurathi.ak\n@gmail.com',
-      href: 'mailto:nagalakshmiakurathi.ak@gmail.com',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7c5cfc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+      ),
+      label: 'EMAIL',
+      value: 'nachiconsultant@gmail.com',
+      href: 'mailto:nachiconsultant@gmail.com',
       linkText: 'Send Email →',
-      color: '#88293D',
+      iconBg: '#f0eeff',
     },
     {
-      icon: '🕐',
-      label: 'Working Hours',
-      value: 'Monday – Saturday\n9:00 AM – 6:00 PM',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e53935" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+      ),
+      label: 'ADDRESS',
+      value: '14/23 1st Floor, Madhav Aspire, No 39, Near Yugis Hotel Stay, Muralinagar, Madhavadhara, Visakhapatnam, AP 530007',
+      href: 'https://maps.google.com/?q=Muralinagar+Madhavadhara+Visakhapatnam+530007',
+      linkText: 'Get Directions →',
+      iconBg: '#fff0f0',
+    },
+    {
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+      ),
+      label: 'RESPONSE TIME',
+      value: 'Within 24 hours',
       href: null,
       linkText: null,
-      color: '#5D4038',
+      iconBg: '#fff7ed',
     },
   ];
 
@@ -119,34 +130,21 @@ export default function ContactPage() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700;800&display=swap');
 
-        @keyframes rotateSlow   { from{transform:rotate(0deg)}   to{transform:rotate(360deg)} }
+        @keyframes rotateSlow   { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         @keyframes floatUp      { from{opacity:0;transform:translateY(50px)} to{opacity:1;transform:translateY(0)} }
         @keyframes slideInLeft  { from{opacity:0;transform:translateX(-60px)} to{opacity:1;transform:translateX(0)} }
-        @keyframes slideInRight { from{opacity:0;transform:translateX(60px)}  to{opacity:1;transform:translateX(0)} }
+        @keyframes slideInRight { from{opacity:0;transform:translateX(60px)} to{opacity:1;transform:translateX(0)} }
         @keyframes fadeIn       { from{opacity:0} to{opacity:1} }
         @keyframes pulseGlow    { 0%,100%{box-shadow:0 0 0 0 rgba(255,151,0,.4)} 50%{box-shadow:0 0 0 12px rgba(255,151,0,0)} }
         @keyframes shimmer      { 0%{background-position:-200% center} 100%{background-position:200% center} }
         @keyframes bounceIn     { 0%{transform:scale(0.3);opacity:0} 50%{transform:scale(1.05)} 70%{transform:scale(0.9)} 100%{transform:scale(1);opacity:1} }
-        @keyframes particleDrift {
-          0%   { transform:translateY(0) translateX(0) opacity:1; }
-          100% { transform:translateY(-80px) translateX(20px) opacity:0; }
-        }
-        @keyframes cardEntrance {
-          from{opacity:0;transform:translateY(30px) scale(.96)}
-          to{opacity:1;transform:translateY(0) scale(1)}
-        }
-        @keyframes successBounce {
-          0%{transform:scale(0);opacity:0}
-          60%{transform:scale(1.15)}
-          80%{transform:scale(.95)}
-          100%{transform:scale(1);opacity:1}
-        }
-        @keyframes progressBar { from{width:0} to{width:100%} }
-        @keyframes waPulse {
-          0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.5)}
-          50%{box-shadow:0 0 0 10px rgba(37,211,102,0)}
-        }
+        @keyframes cardEntrance { from{opacity:0;transform:translateY(30px) scale(.96)} to{opacity:1;transform:translateY(0) scale(1)} }
+        @keyframes successBounce{ 0%{transform:scale(0);opacity:0} 60%{transform:scale(1.15)} 80%{transform:scale(.95)} 100%{transform:scale(1);opacity:1} }
+        @keyframes progressBar  { from{width:0} to{width:100%} }
+        @keyframes waPulse      { 0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.5)} 50%{box-shadow:0 0 0 10px rgba(37,211,102,0)} }
+        @keyframes particleDrift{ 0%{transform:translateY(0) translateX(0);opacity:1} 100%{transform:translateY(-80px) translateX(20px);opacity:0} }
 
+        /* ── HERO ── */
         .contact-hero {
           background: #12312C;
           padding: 7rem 0 4rem;
@@ -156,25 +154,25 @@ export default function ContactPage() {
           display: flex;
           align-items: center;
         }
-        .ch-orbs { position:absolute;inset:0;pointer-events:none; }
-        .ch-orb { position:absolute;border-radius:50%;filter:blur(60px);opacity:.12; }
-        .ch-orb1{width:500px;height:500px;background:#FF9700;top:-150px;right:-100px;animation:rotateSlow 20s linear infinite;}
-        .ch-orb2{width:300px;height:300px;background:#00685F;bottom:-80px;left:-50px;animation:rotateSlow 15s linear infinite reverse;}
-        .ch-orb3{width:200px;height:200px;background:#EDD790;top:40%;left:30%;animation:rotateSlow 25s linear infinite;}
-        .ch-particles { position:absolute;inset:0;pointer-events:none;overflow:hidden; }
-        .ch-particle { position:absolute;width:4px;height:4px;background:#FF9700;border-radius:50%;animation:particleDrift 4s ease-in infinite; }
+        .ch-orbs{position:absolute;inset:0;pointer-events:none}
+        .ch-orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.12}
+        .ch-orb1{width:500px;height:500px;background:#FF9700;top:-150px;right:-100px;animation:rotateSlow 20s linear infinite}
+        .ch-orb2{width:300px;height:300px;background:#00685F;bottom:-80px;left:-50px;animation:rotateSlow 15s linear infinite reverse}
+        .ch-orb3{width:200px;height:200px;background:#EDD790;top:40%;left:30%;animation:rotateSlow 25s linear infinite}
+        .ch-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+        .ch-particle{position:absolute;width:4px;height:4px;background:#FF9700;border-radius:50%;animation:particleDrift 4s ease-in infinite}
         .ch-particle:nth-child(1){left:10%;top:80%;animation-delay:0s;opacity:.6}
         .ch-particle:nth-child(2){left:25%;top:70%;animation-delay:.8s;opacity:.4}
         .ch-particle:nth-child(3){left:50%;top:85%;animation-delay:1.6s;opacity:.7}
         .ch-particle:nth-child(4){left:70%;top:75%;animation-delay:.4s;opacity:.5}
         .ch-particle:nth-child(5){left:85%;top:60%;animation-delay:2s;opacity:.3}
         .ch-particle:nth-child(6){left:40%;top:90%;animation-delay:1.2s;opacity:.8}
-        .ch-container {
+        .ch-container{
           max-width:1200px;margin:0 auto;padding:0 2rem;
           position:relative;z-index:2;
           opacity:0;animation:floatUp .8s ease .1s forwards;
         }
-        .ch-breadcrumb {
+        .ch-breadcrumb{
           font-family:'Barlow Condensed',sans-serif;
           font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;
           color:rgba(255,255,255,.4);margin-bottom:1.5rem;
@@ -183,203 +181,321 @@ export default function ContactPage() {
         .ch-breadcrumb a{color:rgba(255,255,255,.4);text-decoration:none;transition:color .3s}
         .ch-breadcrumb a:hover{color:#FF9700}
         .ch-breadcrumb span{color:#FF9700}
-        .ch-eyebrow {
+        .ch-eyebrow{
           display:inline-flex;align-items:center;gap:.6rem;
           font-family:'Barlow Condensed',sans-serif;
           font-size:.78rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
           color:#FF9700;margin-bottom:1rem;
         }
-        .ch-eyebrow-dot { width:6px;height:6px;background:#FF9700;border-radius:50%;animation:pulseGlow 2s ease-in-out infinite; }
-        .ch-title {
+        .ch-eyebrow-dot{width:6px;height:6px;background:#FF9700;border-radius:50%;animation:pulseGlow 2s ease-in-out infinite}
+        .ch-title{
           font-family:'Playfair Display',serif;
           font-size:clamp(2.5rem,5vw,4.5rem);
           font-weight:900;color:#fff;line-height:1.05;margin-bottom:1rem;
         }
-        .ch-title-accent { color:#FF9700; }
-        .ch-title-outline { -webkit-text-stroke:2px #EDD790;color:transparent; }
-        .ch-desc { font-family:'Barlow',sans-serif;font-size:1.05rem;line-height:1.75;color:rgba(255,255,255,.6);max-width:520px; }
+        .ch-title-accent{color:#FF9700}
+        .ch-title-outline{-webkit-text-stroke:2px #EDD790;color:transparent}
+        .ch-desc{font-family:'Barlow',sans-serif;font-size:1.05rem;line-height:1.75;color:rgba(255,255,255,.6);max-width:520px}
 
-        .contact-section { background:#FEFFF1;padding:5rem 0 6rem;position:relative;overflow:hidden; }
-        .contact-section::before {
+        /* ── MAIN SECTION ── */
+        .contact-section{
+          background: #f5f0e8;
+          padding: 4rem 0 5rem;
+          position: relative;
+          overflow: hidden;
+        }
+        .contact-section::before{
           content:'';position:absolute;top:0;left:0;right:0;height:4px;
           background:linear-gradient(90deg,#FF9700,#E07625,#FF9700);
           background-size:200% auto;animation:shimmer 3s linear infinite;
         }
-        .cs-container { max-width:1200px;margin:0 auto;padding:0 2rem; }
-        .cs-grid { display:grid;grid-template-columns:420px 1fr;gap:4rem;align-items:start; }
+        .cs-container{max-width:1200px;margin:0 auto;padding:0 2rem}
+        .cs-grid{
+          display:grid;
+          grid-template-columns:420px 1fr;
+          gap:3rem;
+          align-items:start;
+        }
 
-        .info-panel { opacity:0;animation:slideInLeft .8s ease .3s forwards; }
-        .info-panel-header { margin-bottom:2.5rem; }
-        .info-eyebrow {
+        /* ── LEFT PANEL ── */
+        .info-panel{opacity:0;animation:slideInLeft .8s ease .3s forwards}
+        .info-panel-header{margin-bottom:2rem}
+        .info-eyebrow{
           font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.75rem;
           letter-spacing:.22em;text-transform:uppercase;color:#FF9700;margin-bottom:.75rem;
           display:flex;align-items:center;gap:.6rem;
         }
         .info-eyebrow::before{content:'';width:1.5rem;height:2px;background:#FF9700}
-        .info-title { font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;color:#31383E;line-height:1.1;margin-bottom:1rem; }
-        .info-title em { font-style:italic;color:#00685F; }
-        .info-sub { font-family:'Barlow',sans-serif;font-size:.92rem;line-height:1.8;color:#666; }
+        .info-title{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:#31383E;line-height:1.1;margin-bottom:.75rem}
+        .info-title em{font-style:italic;color:#00685F}
+        .info-sub{font-family:'Barlow',sans-serif;font-size:.9rem;line-height:1.8;color:#777}
 
-        .contact-cards { display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem; }
-        .cc-card {
-          background:#fff;border-left:4px solid var(--cc-color,#FF9700);
-          padding:1.1rem 1.25rem;display:flex;align-items:flex-start;gap:1rem;
-          position:relative;overflow:hidden;
-          transition:all .35s cubic-bezier(.34,1.56,.64,1);
+        /* Contact cards */
+        .contact-cards{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem}
+        .cc-card{
+          background: #fff;
+          border: 1.5px solid #e8e0d0;
+          border-radius: 14px;
+          padding: 1rem 1.1rem;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          transition: all .3s cubic-bezier(.34,1.2,.64,1);
           opacity:0;animation:cardEntrance .6s ease forwards;
         }
         .cc-card:nth-child(1){animation-delay:.4s}
         .cc-card:nth-child(2){animation-delay:.55s}
         .cc-card:nth-child(3){animation-delay:.7s}
         .cc-card:nth-child(4){animation-delay:.85s}
-        .cc-card::after { content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--cc-color,#FF9700),transparent);opacity:0;transition:opacity .35s ease; }
-        .cc-card:hover { transform:translateX(8px);box-shadow:0 8px 30px rgba(0,0,0,.1); }
-        .cc-card:hover::after{opacity:.04}
-        .cc-icon { font-size:1.4rem;flex-shrink:0;width:42px;height:42px;background:rgba(0,0,0,.04);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .35s ease; }
-        .cc-card:hover .cc-icon{transform:scale(1.15) rotate(-5deg)}
-        .cc-body { flex:1;position:relative;z-index:1; }
-        .cc-label { font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cc-color,#FF9700);margin-bottom:.2rem; }
-        .cc-value { font-family:'Barlow',sans-serif;font-size:.88rem;line-height:1.6;color:#31383E;white-space:pre-line;margin-bottom:.35rem; }
-        .cc-link { font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.75rem;letter-spacing:.08em;color:var(--cc-color,#FF9700);text-decoration:none;display:inline-flex;align-items:center;gap:.3rem;transition:gap .3s ease;position:relative; }
-        .cc-link::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:var(--cc-color,#FF9700);transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
-        .cc-link:hover{gap:.6rem}
-        .cc-link:hover::after{transform:scaleX(1)}
-
-        .map-embed-wrap { position:relative;overflow:hidden;clip-path:polygon(0 0,96% 0,100% 4%,100% 100%,4% 100%,0 96%);opacity:0;animation:fadeIn .8s ease 1s forwards; }
-        .map-embed-wrap iframe { width:100%;height:260px;border:none;display:block;filter:grayscale(30%) contrast(1.05);transition:filter .4s ease; }
-        .map-embed-wrap:hover iframe{filter:grayscale(0%) contrast(1)}
-        .map-overlay-bar { position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(18,49,44,.9),transparent);padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between; }
-        .mob-label { font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:#fff; }
-        .mob-link { font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.75rem;color:#FF9700;text-decoration:none;letter-spacing:.08em;transition:color .3s; }
-        .mob-link:hover{color:#EDD790}
-
-        .wa-strip {
-          margin-top:1.25rem;background:linear-gradient(135deg,#25D366,#128C7E);
-          padding:1rem 1.5rem;display:flex;align-items:center;gap:.75rem;
-          text-decoration:none;cursor:pointer;border-radius:4px;
-          position:relative;z-index:10;
-          transition:transform .3s ease, box-shadow .3s ease;
-          opacity:0;animation:slideInLeft .6s ease 1.1s forwards;
-          pointer-events:auto;
+        .cc-card:hover{
+          border-color:#FF9700;
+          transform:translateX(6px);
+          box-shadow:0 6px 24px rgba(255,151,0,.12);
         }
-        .wa-strip:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(37,211,102,.35)}
-        .wa-strip:active{transform:translateY(-1px)}
-        .wa-icon { font-size:1.6rem;flex-shrink:0;width:44px;height:44px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:waPulse 2.5s ease-in-out infinite; }
+        .cc-icon-wrap{
+          width:44px;height:44px;border-radius:12px;
+          display:flex;align-items:center;justify-content:center;
+          flex-shrink:0;
+          transition:transform .3s ease;
+        }
+        .cc-card:hover .cc-icon-wrap{transform:scale(1.1) rotate(-5deg)}
+        .cc-body{flex:1}
+        .cc-label{
+          font-family:'Barlow Condensed',sans-serif;font-weight:700;
+          font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;
+          color:#aaa;margin-bottom:.2rem;
+        }
+        .cc-value{
+          font-family:'Barlow',sans-serif;font-size:.9rem;
+          line-height:1.55;color:#31383E;font-weight:500;
+          margin-bottom:.25rem;
+        }
+        .cc-link{
+          font-family:'Barlow Condensed',sans-serif;font-weight:700;
+          font-size:.72rem;letter-spacing:.08em;color:#FF9700;
+          text-decoration:none;display:inline-flex;align-items:center;gap:.3rem;
+          transition:gap .25s ease;
+        }
+        .cc-link:hover{gap:.6rem}
+
+        /* Accepting projects badge */
+        .accepting-badge{
+          background:#fff;
+          border:1.5px solid #e8e0d0;
+          border-radius:14px;
+          padding:.9rem 1.1rem;
+          display:flex;align-items:center;gap:.75rem;
+          margin-bottom:1.25rem;
+          opacity:0;animation:cardEntrance .6s ease 1s forwards;
+        }
+        .ab-dot{
+          width:10px;height:10px;border-radius:50%;
+          background:#22c55e;flex-shrink:0;
+          box-shadow:0 0 0 0 rgba(34,197,94,.4);
+          animation:waPulse 2s ease-in-out infinite;
+        }
+        .ab-text{font-family:'Barlow',sans-serif;font-size:.85rem}
+        .ab-title{font-weight:700;color:#22c55e;margin-bottom:.1rem}
+        .ab-sub{font-size:.78rem;color:#888}
+
+        /* Map */
+        .map-embed-wrap{
+          border-radius:14px;overflow:hidden;
+          border:1.5px solid #e8e0d0;
+          opacity:0;animation:fadeIn .8s ease 1s forwards;
+          margin-bottom:1rem;
+        }
+        .map-embed-wrap iframe{width:100%;height:200px;border:none;display:block;filter:grayscale(20%);transition:filter .4s}
+        .map-embed-wrap:hover iframe{filter:grayscale(0%)}
+        .map-bar{
+          background:#fff;padding:.6rem 1rem;
+          display:flex;align-items:center;justify-content:space-between;
+          border-top:1px solid #f0ece4;
+        }
+        .map-bar-label{font-family:'Barlow',sans-serif;font-size:.8rem;color:#555;font-weight:500}
+        .map-bar-link{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.75rem;color:#FF9700;text-decoration:none;letter-spacing:.06em;transition:color .3s}
+        .map-bar-link:hover{color:#E07625}
+
+        /* WhatsApp strip */
+        .wa-strip{
+          background:linear-gradient(135deg,#25D366,#128C7E);
+          border-radius:14px;
+          padding:.9rem 1.1rem;
+          display:flex;align-items:center;gap:.75rem;
+          text-decoration:none;cursor:pointer;
+          transition:transform .3s ease,box-shadow .3s ease;
+          opacity:0;animation:slideInLeft .6s ease 1.1s forwards;
+        }
+        .wa-strip:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(37,211,102,.3)}
+        .wa-icon{font-size:1.5rem;flex-shrink:0;width:40px;height:40px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:waPulse 2.5s ease-in-out infinite}
         .wa-text-block{flex:1}
-        .wa-title { font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:.06em;color:#fff;margin-bottom:.1rem; }
-        .wa-sub { font-family:'Barlow',sans-serif;font-size:.78rem;color:rgba(255,255,255,.85); }
-        .wa-arrow { font-size:1.2rem;color:rgba(255,255,255,.7);transition:transform .3s ease, color .3s ease; }
+        .wa-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:.06em;color:#fff;margin-bottom:.1rem}
+        .wa-sub{font-family:'Barlow',sans-serif;font-size:.75rem;color:rgba(255,255,255,.85)}
+        .wa-arrow{font-size:1.1rem;color:rgba(255,255,255,.7);transition:transform .3s ease,color .3s}
         .wa-strip:hover .wa-arrow{transform:translateX(5px);color:#fff}
 
-        .form-panel { opacity:0;animation:slideInRight .8s ease .3s forwards; }
-        .form-wrap { background:#fff;border-top:4px solid #FF9700;box-shadow:0 20px 60px rgba(0,0,0,.08);padding:3rem;position:relative;overflow:hidden; }
-        .form-wrap::before { content:'';position:absolute;top:0;left:0;right:0;height:100%;background:radial-gradient(ellipse at top right,rgba(255,151,0,.04) 0%,transparent 60%);pointer-events:none; }
-        .form-heading{margin-bottom:2rem}
-        .form-eyebrow { font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:#FF9700;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem; }
-        .form-eyebrow::before{content:'';width:1.2rem;height:2px;background:#FF9700}
-        .form-title { font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#31383E;line-height:1.15; }
-        .form-title span{color:#FF9700}
-        .form-subtitle { font-family:'Barlow',sans-serif;font-size:.88rem;color:#888;margin-top:.4rem;line-height:1.6; }
+        /* ── RIGHT FORM PANEL ── */
+        .form-panel{opacity:0;animation:slideInRight .8s ease .3s forwards}
 
-        .form-steps { display:flex;align-items:center;gap:0;margin-bottom:2rem;position:relative; }
-        .form-steps::before { content:'';position:absolute;top:50%;left:0;right:0;height:2px;background:#eee;transform:translateY(-50%);z-index:0; }
-        .fs-step { display:flex;flex-direction:column;align-items:center;gap:.4rem;flex:1;position:relative;z-index:1; }
-        .fs-dot { width:32px;height:32px;border-radius:50%;background:#eee;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;color:#aaa;transition:all .4s ease; }
+        .form-wrap{
+          background: #faf6ef;
+          border: 1.5px solid #e8e0d0;
+          border-radius: 20px;
+          padding: 2.5rem;
+          position:relative;overflow:hidden;
+        }
+        .form-wrap::before{
+          content:'';position:absolute;top:0;left:0;right:0;height:4px;
+          background:linear-gradient(90deg,#FF9700,#E07625);
+          border-radius:20px 20px 0 0;
+        }
+
+        .form-heading{margin-bottom:1.75rem}
+        .form-eyebrow{
+          font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.72rem;
+          letter-spacing:.22em;text-transform:uppercase;color:#FF9700;margin-bottom:.5rem;
+          display:flex;align-items:center;gap:.5rem;
+        }
+        .form-eyebrow::before{content:'';width:1.2rem;height:2px;background:#FF9700}
+        .form-title{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#31383E;line-height:1.15}
+        .form-title span{color:#FF9700}
+        .form-subtitle{font-family:'Barlow',sans-serif;font-size:.88rem;color:#888;margin-top:.4rem;line-height:1.6}
+
+        /* Form steps */
+        .form-steps{display:flex;align-items:center;gap:0;margin-bottom:1.75rem;position:relative}
+        .form-steps::before{content:'';position:absolute;top:50%;left:0;right:0;height:2px;background:#ede8dd;transform:translateY(-50%);z-index:0}
+        .fs-step{display:flex;flex-direction:column;align-items:center;gap:.4rem;flex:1;position:relative;z-index:1}
+        .fs-dot{width:30px;height:30px;border-radius:50%;background:#ede8dd;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;color:#aaa;transition:all .4s ease}
         .fs-step.done .fs-dot{background:#00685F;border-color:#00685F;color:#fff}
-        .fs-step.active .fs-dot{background:#FF9700;border-color:#FF9700;color:#31383E;animation:pulseGlow 2s ease-in-out infinite}
-        .fs-lbl{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:#aaa;transition:color .4s}
+        .fs-step.active .fs-dot{background:#FF9700;border-color:#FF9700;color:#fff;animation:pulseGlow 2s ease-in-out infinite}
+        .fs-lbl{font-family:'Barlow Condensed',sans-serif;font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:#aaa;transition:color .4s}
         .fs-step.active .fs-lbl{color:#FF9700;font-weight:700}
         .fs-step.done .fs-lbl{color:#00685F;font-weight:700}
 
-        .contact-form{display:flex;flex-direction:column;gap:1.25rem;position:relative;z-index:1}
-        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-        .form-group{display:flex;flex-direction:column;gap:.4rem;position:relative}
-        .form-group label { font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:#31383E;transition:color .3s; }
-        .form-group:focus-within label{color:#FF9700}
-        .form-group input,.form-group select,.form-group textarea {
-          border:1.5px solid rgba(0,0,0,.1);background:#FEFFF1;padding:.9rem 1rem;
-          font-family:'Barlow',sans-serif;font-size:.92rem;color:#31383E;outline:none;
-          transition:all .3s ease;width:100%;appearance:none;-webkit-appearance:none;border-radius:0;
+        /* Form fields */
+        .contact-form{display:flex;flex-direction:column;gap:1.1rem;position:relative;z-index:1}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+        .form-group{display:flex;flex-direction:column;gap:.35rem;position:relative}
+        .form-group label{
+          font-family:'Barlow',sans-serif;font-weight:600;font-size:.82rem;
+          color:#555;transition:color .3s;
         }
-        .form-group select {
+        .form-group:focus-within label{color:#FF9700}
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea{
+          border: 1.5px solid #e0d8cc;
+          border-radius: 10px;
+          background: #fff;
+          padding: .8rem 1rem;
+          font-family:'Barlow',sans-serif;font-size:.92rem;color:#31383E;
+          outline:none;width:100%;
+          appearance:none;-webkit-appearance:none;
+          transition:all .3s ease;
+        }
+        .form-group select{
           background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2331383E' fill='none' stroke-width='2'/%3E%3C/svg%3E");
           background-repeat:no-repeat;background-position:right 1rem center;
-          background-color:#FEFFF1;padding-right:2.5rem;
+          background-color:#fff;padding-right:2.5rem;
         }
-        .form-group input:focus,.form-group select:focus,.form-group textarea:focus { border-color:#FF9700;background:#fff;box-shadow:0 0 0 4px rgba(255,151,0,.08); }
-        .form-group textarea{resize:vertical;min-height:110px}
-        .form-group::after { content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:#FF9700;transform:scaleX(0);transform-origin:left;transition:transform .3s ease;pointer-events:none; }
-        .form-group:focus-within::after{transform:scaleX(1)}
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus{
+          border-color:#FF9700;
+          box-shadow:0 0 0 4px rgba(255,151,0,.1);
+          background:#fffdf9;
+        }
+        .form-group textarea{resize:vertical;min-height:120px;border-radius:10px}
 
-        .dropzone { border:2px dashed rgba(0,0,0,.12);background:#FEFFF1;padding:2rem;cursor:pointer;transition:all .35s ease;min-height:150px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden; }
-        .dropzone::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,151,0,.015) 10px,rgba(255,151,0,.015) 20px);opacity:0;transition:opacity .35s}
-        .dropzone:hover::before,.dropzone.drag-over::before{opacity:1}
-        .dropzone:hover,.dropzone.drag-over{border-color:#FF9700;background:rgba(255,151,0,.03);transform:scale(1.01)}
+        /* Dropzone */
+        .dropzone{
+          border:2px dashed #ddd6c8;
+          border-radius:12px;
+          background:#fff;
+          padding:1.75rem;cursor:pointer;
+          transition:all .3s ease;
+          min-height:130px;display:flex;align-items:center;justify-content:center;
+        }
+        .dropzone:hover,.dropzone.drag-over{border-color:#FF9700;background:#fffbf5;transform:scale(1.01)}
         .dropzone.has-file{border-style:solid;border-color:#00685F;background:rgba(0,104,95,.03)}
         .dz-empty{text-align:center}
-        .dz-icon{font-size:2.8rem;margin-bottom:.75rem;display:block;animation:floatUp .5s ease}
-        .dz-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem;color:#31383E;margin-bottom:.3rem}
-        .dz-sub{font-family:'Barlow',sans-serif;font-size:.85rem;color:#888;margin-bottom:.5rem}
+        .dz-icon{font-size:2.5rem;margin-bottom:.6rem;display:block}
+        .dz-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;color:#31383E;margin-bottom:.25rem}
+        .dz-sub{font-family:'Barlow',sans-serif;font-size:.83rem;color:#888;margin-bottom:.4rem}
         .dz-sub span{color:#FF9700;font-weight:600;cursor:pointer}
-        .dz-fmt{font-family:'Barlow Condensed',sans-serif;font-size:.72rem;color:#bbb;letter-spacing:.1em}
-        .file-info{display:flex;align-items:center;gap:1rem;width:100%}
-        .file-icon-wrap{width:50px;height:50px;background:rgba(0,104,95,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;animation:bounceIn .5s ease}
+        .dz-fmt{font-family:'Barlow Condensed',sans-serif;font-size:.7rem;color:#bbb;letter-spacing:.1em}
+        .file-info{display:flex;align-items:center;gap:.9rem;width:100%}
+        .file-icon-wrap{width:46px;height:46px;background:rgba(0,104,95,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;animation:bounceIn .5s ease}
         .file-details{flex:1}
-        .file-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.92rem;color:#31383E;word-break:break-all}
-        .file-size{font-family:'Barlow',sans-serif;font-size:.75rem;color:#888;margin-top:.15rem}
-        .file-bar{height:3px;background:#eee;margin-top:.5rem;position:relative;overflow:hidden}
+        .file-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;color:#31383E;word-break:break-all}
+        .file-size{font-family:'Barlow',sans-serif;font-size:.73rem;color:#888;margin-top:.12rem}
+        .file-bar{height:3px;background:#eee;margin-top:.45rem;overflow:hidden;border-radius:2px}
         .file-bar-fill{height:100%;background:#00685F;animation:progressBar .8s ease forwards}
-        .file-remove{background:rgba(136,41,61,.08);border:none;color:#88293D;width:30px;height:30px;border-radius:50%;font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s}
+        .file-remove{background:rgba(136,41,61,.08);border:none;color:#88293D;width:28px;height:28px;border-radius:50%;font-size:.78rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s}
         .file-remove:hover{background:#88293D;color:#fff;transform:rotate(90deg)}
 
-        .char-count{font-family:'Barlow',sans-serif;font-size:.72rem;color:#aaa;text-align:right;margin-top:.2rem}
+        .char-count{font-family:'Barlow',sans-serif;font-size:.7rem;color:#bbb;text-align:right;margin-top:.18rem}
         .char-count.warn{color:#E07625}
 
-        /* Error message box */
-        .error-box {
-          background:#fff0f0;border-left:4px solid #c0392b;
-          padding:.9rem 1rem;
+        .error-box{
+          background:#fff0f0;border:1.5px solid #fdd;border-radius:10px;
+          padding:.85rem 1rem;
           font-family:'Barlow',sans-serif;font-size:.88rem;color:#c0392b;
           animation:fadeIn .3s ease;
         }
 
-        .form-submit { width:100%;justify-content:center;padding:1.15rem;font-size:.95rem;position:relative;overflow:hidden;background:#FF9700;color:#31383E;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;display:flex;align-items:center;gap:.5rem;transition:all .3s; }
-        .form-submit::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:#E07625;transition:left .3s ease;z-index:0}
-        .form-submit:hover::before{left:0}
-        .form-submit > *{position:relative;z-index:1}
+        /* Submit button */
+        .form-submit{
+          width:100%;padding:1.1rem;
+          background:#FF9700;color:#fff;
+          font-family:'Barlow Condensed',sans-serif;font-weight:700;
+          font-size:1rem;letter-spacing:.12em;text-transform:uppercase;
+          border:none;cursor:pointer;border-radius:12px;
+          display:flex;align-items:center;justify-content:center;gap:.5rem;
+          transition:all .3s ease;position:relative;overflow:hidden;
+        }
+        .form-submit:hover:not(:disabled){
+          background:#E07625;
+          transform:translateY(-2px);
+          box-shadow:0 10px 28px rgba(255,151,0,.35);
+        }
         .form-submit:disabled{opacity:.65;cursor:not-allowed}
-        .form-submit:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,151,0,.35)}
-        .btn-loading{display:flex;align-items:center;gap:.75rem;position:relative;z-index:1}
-        .spinner{width:20px;height:20px;border:2px solid rgba(0,0,0,.15);border-top-color:#31383E;border-radius:50%;animation:rotateSlow .7s linear infinite;flex-shrink:0}
+        .btn-loading{display:flex;align-items:center;gap:.75rem}
+        .spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:rotateSlow .7s linear infinite;flex-shrink:0}
 
-        .privacy-note { font-family:'Barlow',sans-serif;font-size:.75rem;color:#bbb;text-align:center;line-height:1.6;display:flex;align-items:center;justify-content:center;gap:.4rem; }
-        .privacy-note svg{flex-shrink:0}
+        .privacy-note{
+          font-family:'Barlow',sans-serif;font-size:.73rem;color:#bbb;
+          text-align:center;line-height:1.6;
+          display:flex;align-items:center;justify-content:center;gap:.4rem;
+        }
 
-        .success-screen{text-align:center;padding:3.5rem 2rem;animation:fadeIn .6s ease}
-        .success-anim{width:90px;height:90px;background:linear-gradient(135deg,#00685F,#12312C);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1.5rem;animation:successBounce .8s cubic-bezier(.34,1.56,.64,1)}
-        .success-screen h3{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#31383E;margin-bottom:.75rem}
-        .success-screen p{font-family:'Barlow',sans-serif;font-size:.95rem;color:#666;line-height:1.75;max-width:400px;margin:0 auto 2rem}
-        .success-details{display:flex;flex-direction:column;gap:.5rem;background:#FEFFF1;padding:1.25rem;margin-bottom:2rem;text-align:left;border-left:3px solid #00685F}
-        .sd-row{display:flex;gap:.5rem;font-family:'Barlow',sans-serif;font-size:.85rem}
+        /* Success screen */
+        .success-screen{text-align:center;padding:3rem 2rem;animation:fadeIn .6s ease}
+        .success-anim{width:86px;height:86px;background:linear-gradient(135deg,#00685F,#12312C);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.4rem;margin:0 auto 1.4rem;animation:successBounce .8s cubic-bezier(.34,1.56,.64,1)}
+        .success-screen h3{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;color:#31383E;margin-bottom:.7rem}
+        .success-screen p{font-family:'Barlow',sans-serif;font-size:.93rem;color:#666;line-height:1.75;max-width:380px;margin:0 auto 1.75rem}
+        .success-details{display:flex;flex-direction:column;gap:.45rem;background:#f5f0e8;border-radius:12px;padding:1.1rem;margin-bottom:1.75rem;text-align:left;border-left:3px solid #00685F}
+        .sd-row{display:flex;gap:.5rem;font-family:'Barlow',sans-serif;font-size:.84rem}
         .sd-key{font-weight:600;color:#31383E;min-width:80px}
         .sd-val{color:#666}
-        .success-btn{display:inline-flex;align-items:center;gap:.5rem;background:#FF9700;color:#31383E;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;letter-spacing:.12em;text-transform:uppercase;padding:.9rem 2rem;border:none;cursor:pointer;transition:all .3s;margin:0 auto}
+        .success-btn{display:inline-flex;align-items:center;gap:.5rem;background:#FF9700;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;letter-spacing:.12em;text-transform:uppercase;padding:.85rem 2rem;border:none;cursor:pointer;border-radius:10px;transition:all .3s}
         .success-btn:hover{background:#E07625;transform:translateY(-2px)}
 
         @media(max-width:1050px){
-          .cs-grid{grid-template-columns:1fr;gap:3rem}
+          .cs-grid{grid-template-columns:1fr;gap:2.5rem}
           .info-panel{animation-name:floatUp}
           .form-panel{animation-name:floatUp;animation-delay:.5s}
         }
         @media(max-width:640px){
-          .form-wrap{padding:1.75rem}
+          .form-wrap{padding:1.5rem}
           .form-row{grid-template-columns:1fr}
           .form-steps{display:none}
           .ch-title{font-size:2.2rem}
         }
       `}</style>
 
-      {/* HERO */}
+      {/* ── HERO ── */}
       <section className="contact-hero">
         <div className="ch-orbs">
           <div className="ch-orb ch-orb1" />
@@ -404,37 +520,43 @@ export default function ContactPage() {
             Your <span className="ch-title-outline">Future</span>
           </h1>
           <p className="ch-desc">
-            Ready to start your career journey? Submit your application below and our team will match you with the perfect opportunity within 24–48 hours.
+            Ready to start your career journey? Submit your application below and our team at Nachi Consultant Pvt. Ltd. will match you with the perfect opportunity within 24–48 hours.
           </p>
         </div>
       </section>
 
-      {/* MAIN */}
+      {/* ── MAIN ── */}
       <section className="contact-section">
         <div className="cs-container">
           <div className="cs-grid">
 
-            {/* LEFT */}
+            {/* ── LEFT ── */}
             <div className="info-panel">
               <div className="info-panel-header">
                 <div className="info-eyebrow">Get in Touch</div>
                 <h2 className="info-title">We're Here<br />to <em>Help You</em></h2>
                 <p className="info-sub">
-                  Whether you're looking for your first job or switching careers — our placement team is ready to guide you at every step.
+                  Whether you're looking for your first job or switching careers — the team at Nachi Consultant Pvt. Ltd., Visakhapatnam is ready to guide you at every step.
                 </p>
               </div>
 
+              {/* Contact cards */}
               <div className="contact-cards">
                 {contactCards.map((card, i) => (
-                  <div key={i} className="cc-card" style={{ '--cc-color': card.color }}>
-                    <div className="cc-icon">{card.icon}</div>
+                  <div key={i} className="cc-card">
+                    <div className="cc-icon-wrap" style={{ background: card.iconBg }}>
+                      {card.icon}
+                    </div>
                     <div className="cc-body">
                       <div className="cc-label">{card.label}</div>
                       <div className="cc-value">{card.value}</div>
                       {card.href && card.linkText && (
-                        <a href={card.href} className="cc-link"
+                        <a
+                          href={card.href}
+                          className="cc-link"
                           target={card.href.startsWith('http') ? '_blank' : undefined}
-                          rel={card.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+                          rel={card.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                        >
                           {card.linkText}
                         </a>
                       )}
@@ -443,23 +565,35 @@ export default function ContactPage() {
                 ))}
               </div>
 
+              {/* Accepting projects badge */}
+              <div className="accepting-badge">
+                <div className="ab-dot" />
+                <div className="ab-text">
+                  <div className="ab-title">Currently accepting new projects</div>
+                  <div className="ab-sub">Our team is available Mon–Sat, 9am–6pm IST</div>
+                </div>
+              </div>
+
+              {/* Map */}
               <div className="map-embed-wrap">
                 <iframe
-                  title="Nachi Consultation Office Location"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3829.2!2d80.4365!3d16.3067!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a35f0a2a3b3b3b3%3A0x0!2sSaradha+Colony%2C+Guntur%2C+Andhra+Pradesh+522002!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                  title="Office Location"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3800.5!2d83.3132!3d17.7384!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a395530000b1d01%3A0x0!2sMuralinagar%2C+Madhavadhara%2C+Visakhapatnam%2C+AP+530007!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
                   allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"
                 />
-                <div className="map-overlay-bar">
-                  <span className="mob-label">📍 Saradha Colony, Guntur</span>
-                  <a href="https://www.google.com/maps/search/Saradha+Colony+Guntur+522002"
-                    className="mob-link" target="_blank" rel="noopener noreferrer">
+                <div className="map-bar">
+                  <span className="map-bar-label">📍 Muralinagar, Visakhapatnam</span>
+                  <a href="https://maps.google.com/?q=Muralinagar+Madhavadhara+Visakhapatnam+530007" className="map-bar-link" target="_blank" rel="noopener noreferrer">
                     Open in Maps →
                   </a>
                 </div>
               </div>
 
-              <a href="https://wa.me/916305650469?text=Hello%20Nachi%20Consultation%2C%20I%20am%20looking%20for%20a%20job%20opportunity."
-                className="wa-strip" target="_blank" rel="noopener noreferrer">
+              {/* WhatsApp */}
+              <a
+                href="https://wa.me/919010133301?text=Hello%2C%20I%20am%20looking%20for%20a%20job%20opportunity%20at%20Nachi%20Consultant."
+                className="wa-strip" target="_blank" rel="noopener noreferrer"
+              >
                 <div className="wa-icon">💬</div>
                 <div className="wa-text-block">
                   <div className="wa-title">Chat on WhatsApp</div>
@@ -469,7 +603,7 @@ export default function ContactPage() {
               </a>
             </div>
 
-            {/* RIGHT */}
+            {/* ── RIGHT FORM ── */}
             <div className="form-panel">
               <div className="form-wrap">
                 {submitted ? (
@@ -477,7 +611,7 @@ export default function ContactPage() {
                     <div className="success-anim">✅</div>
                     <h3>Application Sent!</h3>
                     <p>
-                      Thank you <strong>{formData.name}</strong>! Your application has been received.
+                      Thank you <strong>{formData.name}</strong>! Your application has been received by Nachi Consultant Pvt. Ltd.
                       Our team will contact you at <strong>{formData.phone}</strong> within 24–48 hours.
                     </p>
                     <div className="success-details">
@@ -487,9 +621,7 @@ export default function ContactPage() {
                       {resumeFile && <div className="sd-row"><span className="sd-key">Resume:</span><span className="sd-val">{resumeFile.name}</span></div>}
                     </div>
                     <button className="success-btn" onClick={() => {
-                      setSubmitted(false);
-                      setResumeFile(null);
-                      setErrorMsg('');
+                      setSubmitted(false); setResumeFile(null); setErrorMsg('');
                       setFormData({ name:'',email:'',phone:'',jobType:'',experience:'',location:'',message:'' });
                     }}>
                       Submit Another Application
@@ -507,9 +639,7 @@ export default function ContactPage() {
                       {['Personal Info','Job Preference','Resume & Message'].map((label, i) => {
                         const filled = i === 0
                           ? (formData.name && formData.phone && formData.email)
-                          : i === 1
-                            ? (formData.jobType && formData.location)
-                            : false;
+                          : i === 1 ? (formData.jobType && formData.location) : false;
                         return (
                           <div key={i} className={`fs-step ${filled ? 'done' : i === 0 ? 'active' : ''}`}>
                             <div className="fs-dot">{filled ? '✓' : i + 1}</div>
@@ -523,31 +653,31 @@ export default function ContactPage() {
                       <div className="form-row">
                         <div className="form-group">
                           <label>Full Name *</label>
-                          <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Your full name" required />
+                          <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="" required />
                         </div>
                         <div className="form-group">
                           <label>Phone Number *</label>
-                          <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+91 XXXXX XXXXX" required />
+                          <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+91 " required />
                         </div>
                       </div>
 
                       <div className="form-group">
                         <label>Email Address *</label>
-                        <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="your@email.com" required />
+                        <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="" required />
                       </div>
 
                       <div className="form-row">
                         <div className="form-group">
                           <label>Job Type Interested In *</label>
                           <select name="jobType" value={formData.jobType} onChange={handleChange} required>
-                            <option value="">Select job type...</option>
+                            <option value=""></option>
                             {servicesList.map(s => <option key={s} value={s}>{s}</option>)}
                           </select>
                         </div>
                         <div className="form-group">
                           <label>Years of Experience</label>
                           <select name="experience" value={formData.experience} onChange={handleChange}>
-                            <option value="">Select experience...</option>
+                            <option value=""></option>
                             <option value="Fresher (0 years)">Fresher (0 years)</option>
                             <option value="1–2 years">1–2 years</option>
                             <option value="3–5 years">3–5 years</option>
@@ -558,7 +688,7 @@ export default function ContactPage() {
 
                       <div className="form-group">
                         <label>Preferred Work Location *</label>
-                        <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder="City / Area you prefer to work in" required />
+                        <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder="" required />
                       </div>
 
                       <div className="form-group">
@@ -594,15 +724,16 @@ export default function ContactPage() {
 
                       <div className="form-group">
                         <label>Tell Us About Yourself</label>
-                        <textarea name="message" value={formData.message} onChange={handleChange}
-                          placeholder="Briefly describe your skills, past work experience, and what kind of role you're looking for..."
-                          rows={4} maxLength={500} />
+                        <textarea
+                          name="message" value={formData.message} onChange={handleChange}
+                          placeholder="Briefly describe your skills, past experience, and what kind of role you're looking for..."
+                          rows={4} maxLength={500}
+                        />
                         <div className={`char-count ${formData.message.length > 450 ? 'warn' : ''}`}>
                           {formData.message.length} / 500
                         </div>
                       </div>
 
-                      {/* ✅ Error message shown if API fails */}
                       {errorMsg && <div className="error-box">⚠️ {errorMsg}</div>}
 
                       <button type="submit" className="form-submit" disabled={loading}>

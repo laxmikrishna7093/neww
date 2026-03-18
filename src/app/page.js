@@ -32,20 +32,20 @@ function StatNum({ target, suffix }) {
   return <span ref={ref}>{val}{suffix}</span>;
 }
 
-/* ── data ── */
+/* ── DATA ── */
 const stats = [
-  { target: 500, suffix: '+', label: 'Placements Done',    icon: '🎯' },
-  { target: 60,  suffix: '+', label: 'Companies Served',   icon: '🏢' },
-  { target: 5,   suffix: '+', label: 'Years Experience',   icon: '📅' },
-  { target: 10,  suffix: '+', label: 'Cities Covered',     icon: '🌐' },
+  { icon: '👷', target: 500,  suffix: '+', label: 'Workers Placed'    },
+  { icon: '🏢', target: 60,   suffix: '+', label: 'Companies Served'  },
+  { icon: '🌆', target: 10,   suffix: '+', label: 'Cities Covered'    },
+  { icon: '📅', target: 5,    suffix: '+', label: 'Years of Service'  },
 ];
 
 const services = [
-  { icon: '🛡️', title: 'Security Services',      desc: 'Trained, background-verified security personnel for residential, commercial, and industrial needs. Available round the clock.' },
-  { icon: '🧹', title: 'Cleaning Services',        desc: 'Professional cleaning staff for offices, homes, hospitals, and large commercial spaces. Hygienic and reliable.' },
-  { icon: '🏠', title: 'Housekeeping',             desc: 'Skilled housekeeping staff for hotels, corporates, and residential complexes — trained to the highest standards.' },
-  { icon: '📦', title: 'Packers & Movers',         desc: 'Reliable packing and moving professionals ensuring safe, timely relocation for households and businesses alike.' },
-  { icon: '🚗', title: 'Driver Services',          desc: 'Verified, licensed drivers for personal, corporate, and fleet requirements. Punctual, professional, trustworthy.' },
+  { icon: '🛡️', title: 'Security Services',  desc: 'Trained, background-verified security personnel for residential, commercial, and industrial needs. Available round the clock.' },
+  { icon: '🧹', title: 'Cleaning Services',   desc: 'Professional cleaning staff for offices, homes, hospitals, and large commercial spaces. Hygienic and reliable.' },
+  { icon: '🏠', title: 'Housekeeping',        desc: 'Skilled housekeeping staff for hotels, corporates, and residential complexes — trained to the highest standards.' },
+  { icon: '📦', title: 'Packers & Movers',    desc: 'Reliable packing and moving professionals ensuring safe, timely relocation for households and businesses alike.' },
+  { icon: '🚗', title: 'Driver Services',     desc: 'Verified, licensed drivers for personal, corporate, and fleet requirements. Punctual, professional, trustworthy.' },
 ];
 
 export default function HomePage() {
@@ -95,7 +95,6 @@ export default function HomePage() {
           position: relative; overflow: hidden;
         }
 
-        /* layered bg */
         .hero-noise {
           position:absolute; inset:0; pointer-events:none; z-index:0;
           background-image:
@@ -111,21 +110,18 @@ export default function HomePage() {
           background-size:90px 90px;
         }
 
-        /* blobs */
         .blob { position:absolute; border-radius:50%; filter:blur(90px); pointer-events:none; }
         .b1 { width:600px;height:600px; top:-180px;right:-120px; background:rgba(255,151,0,.07); animation:drift 12s ease-in-out infinite; }
         .b2 { width:350px;height:350px; bottom:-80px;left:-80px;  background:rgba(0,104,95,.1);  animation:driftRev 9s ease-in-out infinite; }
         .b3 { width:200px;height:200px; top:45%;left:35%;         background:rgba(237,215,144,.05); animation:drift 15s ease-in-out 3s infinite; }
 
-        /* rings */
         .ring { position:absolute; border-radius:50%; border:1px dashed; pointer-events:none; }
         .rg1 { width:500px;height:500px; top:-100px;right:-80px; border-color:rgba(255,151,0,.08); animation:spin 40s linear infinite; }
         .rg2 { width:300px;height:300px; bottom:60px;left:-60px;  border-color:rgba(0,104,95,.1);  animation:spinRev 28s linear infinite; }
         .rg3 { width:140px;height:140px; top:38%;left:42%;        border-color:rgba(255,255,255,.06); animation:spin 20s linear infinite; }
 
-        /* dots */
         .hdot { position:absolute; border-radius:50%; pointer-events:none; }
-        .hd1 { w:8px;height:8px;width:8px; background:var(--amber); top:20%;right:26%; animation:pulse 2.5s ease-in-out infinite; }
+        .hd1 { width:8px;height:8px; background:var(--amber); top:20%;right:26%; animation:pulse 2.5s ease-in-out infinite; }
         .hd2 { width:5px;height:5px; background:var(--teal); bottom:28%;left:22%; animation:pulse 3.5s ease-in-out 1s infinite; }
         .hd3 { width:12px;height:12px; background:rgba(255,151,0,.35); top:62%;right:44%; animation:pulse 2s ease-in-out .5s infinite; }
 
@@ -137,7 +133,6 @@ export default function HomePage() {
           position:relative; z-index:2;
         }
 
-        /* text side */
         .h-eyebrow {
           display:inline-flex; align-items:center; gap:.6rem;
           font-family:'Cabinet Grotesk',sans-serif; font-weight:800;
@@ -156,10 +151,7 @@ export default function HomePage() {
         }
         .h1-amber  { color:var(--amber); }
         .h1-italic { font-style:italic; font-weight:400; color:rgba(255,255,255,.65); }
-        .h1-stroke {
-          -webkit-text-stroke: 2px rgba(237,215,144,.45);
-          color: transparent;
-        }
+        .h1-stroke { -webkit-text-stroke:2px rgba(237,215,144,.45); color:transparent; }
 
         .hero-p {
           font-family:'Cabinet Grotesk',sans-serif; font-size:1rem;
@@ -198,13 +190,11 @@ export default function HomePage() {
         }
         .btn-b:hover { border-color:var(--amber); color:var(--amber); }
 
-        /* visual side */
         .hero-visual {
           position:relative; height:500px;
           animation:scaleIn .9s ease .3s both;
         }
 
-        /* central amber circle */
         .hv-core {
           position:absolute; top:50%;left:50%;
           transform:translate(-50%,-50%);
@@ -217,7 +207,6 @@ export default function HomePage() {
         .hvc-n { font-family:'Bebas Neue',sans-serif; font-size:3.5rem; color:var(--amber); line-height:1; }
         .hvc-l { font-family:'Cabinet Grotesk',sans-serif; font-size:.62rem; font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.4); margin-top:.15rem; }
 
-        /* orbit rings */
         .orb-ring {
           position:absolute; top:50%;left:50%;
           transform:translate(-50%,-50%);
@@ -228,7 +217,6 @@ export default function HomePage() {
         .or2 { width:370px;height:370px; animation:spinRev 50s linear infinite; }
         .or3 { width:460px;height:460px; border-color:rgba(0,104,95,.1); animation:spin 65s linear infinite; }
 
-        /* floating tags */
         .orb-tag {
           position:absolute; padding:.65rem 1.15rem;
           background:rgba(255,255,255,.06); border:1px solid var(--border);
@@ -245,7 +233,7 @@ export default function HomePage() {
         .ot-e { font-size:1.1rem; }
 
         /* ══════════════════════════════════
-           STATS — stays dark forest, amber numbers
+           STATS
         ══════════════════════════════════ */
         .stats { background:var(--forest); border-top:1px solid rgba(255,255,255,.06); position:relative; }
         .stats::after {
@@ -318,7 +306,6 @@ export default function HomePage() {
         .body-txt p { margin-bottom:1rem; }
         .body-txt strong { color:var(--ink); font-weight:700; }
 
-        /* about visual */
         .av-card {
           background:var(--forest);
           padding:2.75rem;
@@ -340,18 +327,13 @@ export default function HomePage() {
         .avm-l { font-family:'Cabinet Grotesk',sans-serif; font-size:.65rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-top:.12rem; display:block; }
 
         /* ══════════════════════════════════
-           SERVICES — bg #00685F exactly
-           NO numbering
+           SERVICES
         ══════════════════════════════════ */
-        .svc {
-          background: #00685F;
-          padding:7rem 0; position:relative; overflow:hidden;
-        }
-        /* subtle dot-grid texture */
+        .svc { background:#00685F; padding:7rem 0; position:relative; overflow:hidden; }
         .svc::before {
           content:''; position:absolute; inset:0;
-          background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.055) 1px, transparent 0);
-          background-size: 36px 36px; pointer-events:none;
+          background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.055) 1px, transparent 0);
+          background-size:36px 36px; pointer-events:none;
         }
         .svc-blob { position:absolute; border-radius:50%; filter:blur(110px); pointer-events:none; }
         .svb1 { width:500px;height:500px; top:-120px;left:-100px; background:rgba(255,151,0,.1); }
@@ -362,8 +344,7 @@ export default function HomePage() {
         .svc-hd .tag::before { background:var(--gold); }
         .svc-title {
           font-family:'Fraunces',serif; font-weight:900;
-          font-size:clamp(2.2rem,4vw,4rem); color:#fff; line-height:1.05;
-          margin-bottom:1rem;
+          font-size:clamp(2.2rem,4vw,4rem); color:#fff; line-height:1.05; margin-bottom:1rem;
         }
         .svc-title em { font-style:italic; color:var(--gold); }
         .svc-sub {
@@ -371,7 +352,6 @@ export default function HomePage() {
           line-height:1.8; color:rgba(255,255,255,.45); max-width:500px; margin:0 auto;
         }
 
-        /* magazine grid */
         .svc-grid {
           display:grid; grid-template-columns:repeat(3,1fr);
           gap:1.5px; background:rgba(255,255,255,.06);
@@ -380,19 +360,15 @@ export default function HomePage() {
         .svc-card {
           background:#00685F; padding:2.5rem 2rem;
           position:relative; overflow:hidden;
-          transition:background .35s ease;
-          cursor:default;
+          transition:background .35s ease; cursor:default;
         }
         .svc-card:hover { background:rgba(255,255,255,.06); }
-        /* top amber line reveal on hover */
         .svc-card::after {
           content:''; position:absolute; top:0;left:0;right:0; height:2px;
           background:linear-gradient(90deg,var(--gold),var(--amber));
-          transform:scaleX(0); transform-origin:left;
-          transition:transform .45s ease;
+          transform:scaleX(0); transform-origin:left; transition:transform .45s ease;
         }
         .svc-card:hover::after { transform:scaleX(1); }
-        /* bottom glow */
         .svc-card::before {
           content:''; position:absolute; bottom:0;left:0;right:0; height:60%;
           background:radial-gradient(ellipse at 50% 100%, rgba(255,151,0,.04), transparent 70%);
@@ -400,7 +376,6 @@ export default function HomePage() {
         }
         .svc-card:hover::before { opacity:1; }
 
-        /* icon — NO number */
         .sc-icon {
           width:60px;height:60px; border-radius:50%;
           background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12);
@@ -409,15 +384,13 @@ export default function HomePage() {
           transition:transform .35s, background .35s;
         }
         .svc-card:hover .sc-icon { transform:scale(1.1) rotate(-6deg); background:rgba(255,151,0,.15); }
-
         .sc-h { font-family:'Cabinet Grotesk',sans-serif; font-weight:800; font-size:1.05rem; color:#fff; margin-bottom:.6rem; }
         .sc-p { font-family:'Cabinet Grotesk',sans-serif; font-size:.86rem; line-height:1.75; color:rgba(255,255,255,.42); margin-bottom:1.5rem; }
         .sc-lnk {
           display:inline-flex; align-items:center; gap:.4rem;
           font-family:'Cabinet Grotesk',sans-serif; font-weight:800;
           font-size:.78rem; letter-spacing:.08em; text-transform:uppercase;
-          color:var(--gold); text-decoration:none;
-          transition:gap .3s;
+          color:var(--gold); text-decoration:none; transition:gap .3s;
         }
         .sc-lnk:hover { gap:.8rem; }
 
@@ -453,10 +426,7 @@ export default function HomePage() {
         /* ══════════════════════════════════
            CTA
         ══════════════════════════════════ */
-        .cta-sec {
-          background:var(--amber); padding:6rem 0;
-          position:relative; overflow:hidden;
-        }
+        .cta-sec { background:var(--amber); padding:6rem 0; position:relative; overflow:hidden; }
         .cta-sec::before {
           content:''; position:absolute; inset:0;
           background:repeating-linear-gradient(-52deg,transparent,transparent 22px,rgba(0,0,0,.03) 22px,rgba(0,0,0,.03) 44px);
@@ -481,8 +451,7 @@ export default function HomePage() {
           background:var(--ink); color:#fff;
           font-family:'Cabinet Grotesk',sans-serif; font-weight:800;
           font-size:.88rem; letter-spacing:.05em; text-transform:uppercase;
-          padding:1rem 2.5rem; text-decoration:none;
-          transition:all .3s;
+          padding:1rem 2.5rem; text-decoration:none; transition:all .3s;
         }
         .btn-ink:hover { background:var(--forest); transform:translateY(-3px); box-shadow:0 14px 30px rgba(0,0,0,.2); }
         .cta-ph { display:flex; align-items:center; gap:.85rem; text-decoration:none; }
@@ -498,7 +467,6 @@ export default function HomePage() {
           .stats-row { grid-template-columns:repeat(2,1fr); }
           .stat-cell { border-bottom:1px solid rgba(255,255,255,.06); }
           .svc-grid { grid-template-columns:repeat(2,1fr); }
-          .testi-grid { grid-template-columns:1fr; }
           .cta-row { flex-direction:column; text-align:center; }
           .cta-acts { justify-content:center; }
         }
@@ -518,7 +486,6 @@ export default function HomePage() {
         <div className="hdot hd1"/><div className="hdot hd2"/><div className="hdot hd3"/>
 
         <div className="hero-body">
-          {/* left */}
           <div>
             <div className="h-eyebrow"><span className="h-eyebrow-pulse"/>Trusted Employment Partner · Est. 2020</div>
             <h1 className="hero-h1">
@@ -535,7 +502,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* right visual */}
           <div className="hero-visual">
             <div className="orb-ring or1"/><div className="orb-ring or2"/><div className="orb-ring or3"/>
             <div className="hv-core">
@@ -549,13 +515,12 @@ export default function HomePage() {
             <div className="orb-tag ot5"><span className="ot-e">🏠</span>Housekeeping</div>
           </div>
         </div>
-
       </section>
 
       {/* ══ STATS ══ */}
       <div className="stats">
         <div className="stats-row">
-          {stats.map((s,i) => (
+          {stats.map((s, i) => (
             <div key={i} className="stat-cell">
               <span className="stat-icon">{s.icon}</span>
               <span className="stat-n"><StatNum target={s.target} suffix={s.suffix}/></span>
@@ -594,7 +559,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ══ SERVICES — bg:#00685F, NO numbering ══ */}
+      {/* ══ SERVICES ══ */}
       <section className="svc">
         <div className="svc-blob svb1"/><div className="svc-blob svb2"/>
         <div className="wrap">
@@ -604,9 +569,8 @@ export default function HomePage() {
             <p className="svc-sub">From security to packers, we place vetted, trained professionals across all service categories.</p>
           </div>
           <div className="svc-grid">
-            {services.map((s,i) => (
+            {services.map((s, i) => (
               <div key={i} className="svc-card">
-                {/* icon only — zero numbering */}
                 <div className="sc-icon">{s.icon}</div>
                 <h3 className="sc-h">{s.title}</h3>
                 <p className="sc-p">{s.desc}</p>
@@ -630,7 +594,7 @@ export default function HomePage() {
                   { n:'02', title:'We Source & Verify',       desc:'Our team screens, verifies backgrounds, and trains candidates.' },
                   { n:'03', title:'Perfect Match',            desc:'We present the best-fit candidates within 24–48 hours.' },
                   { n:'04', title:'Placement & Support',      desc:'We support both employer and employee even post-placement.' },
-                ].map((s,i) => (
+                ].map((s, i) => (
                   <div key={i} className="step">
                     <div className="step-n">{s.n}</div>
                     <div className="step-b"><h4>{s.title}</h4><p>{s.desc}</p></div>
