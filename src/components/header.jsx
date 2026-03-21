@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
 export default function Header() {
@@ -51,38 +52,14 @@ export default function Header() {
           gap: 0.75rem;
           text-decoration: none;
         }
-        .logo-icon {
-          width: 42px; height: 42px;
-          background: #FF9700;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          clip-path: polygon(0 0, 85% 0, 100% 15%, 100% 100%, 15% 100%, 0 85%);
-          flex-shrink: 0;
+        .logo-img {
+          width: 100px;
+          height: 90px;
+          object-fit: contain;
+          display: block;
+          transition: opacity 0.3s ease;
         }
-        .logo-icon span {
-          font-family: 'Playfair Display', serif;
-          font-weight: 900;
-          font-size: 1.4rem;
-          color: #31383E;
-          line-height: 1;
-        }
-        .logo-text { display: flex; flex-direction: column; }
-        .logo-main {
-          font-family: 'Barlow Condensed', sans-serif;
-          font-weight: 800;
-          font-size: 1.3rem;
-          letter-spacing: 0.12em;
-          color: #fff;
-          line-height: 1;
-        }
-        .logo-sub {
-          font-family: 'Barlow Condensed', sans-serif;
-          font-weight: 400;
-          font-size: 0.58rem;
-          letter-spacing: 0.15em;
-          color: #EDD790;
-        }
+        .logo-img:hover { opacity: 0.85; }
         .site-nav {
           display: flex;
           align-items: center;
@@ -149,6 +126,7 @@ export default function Header() {
         .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
         @media (max-width: 768px) {
           .hamburger { display: flex; }
+          .logo-img { width: 120px; height: 40px; }
           .site-nav {
             position: fixed;
             top: 0; right: -100%;
@@ -174,12 +152,17 @@ export default function Header() {
 
       <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>
         <div className="header-inner">
+
+          {/* ✅ Logo using your public/logo.png */}
           <Link href="/" className="logo">
-            <div className="logo-icon"><span>N</span></div>
-            <div className="logo-text">
-              <span className="logo-main">NACHI</span>
-              <span className="logo-sub">CONSULTATION PVT. LTD.</span>
-            </div>
+            <Image
+              src="/logo.png"
+              alt="Nachi Consultation Pvt. Ltd."
+              width={140}
+              height={48}
+              className="logo-img"
+              priority
+            />
           </Link>
 
           <nav className={`site-nav ${menuOpen ? 'open' : ''}`}>
@@ -193,7 +176,6 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-           
           </nav>
 
           <button

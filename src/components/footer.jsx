@@ -3,7 +3,8 @@ import Link from 'next/link';
 export default function Footer() {
   const services = [
     'Security Services',
-    'Cleaning Services',
+    'Customer services',
+  'Customer Associate',
     'Housekeeping',
     'Packers & Movers',
     'Driver Services',
@@ -40,7 +41,7 @@ export default function Footer() {
     },
     {
       label: 'WhatsApp',
-      href: 'https://wa.me/916305650469?text=Hello%20Nachi%20Consultation%2C%20I%20would%20like%20to%20enquire%20about%20your%20services.',
+      href: 'https://wa.me/919010133301?text=Hello%20Nachi%20Consultation%2C%20I%20would%20like%20to%20enquire%20about%20your%20services.',
       color: '#25D366',
       svg: (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -286,26 +287,15 @@ export default function Footer() {
               <div className="footer-contact-list">
                 <div className="footer-contact-item">
                   <span className="contact-icon">📍</span>
-                  <span>34/145, 1st Line Saradha Colony,<br />Guntur – 522002, Andhra Pradesh</span>
+                  <span>14/23, 1st floor,
+                    madhav Aspire, no-39, Muralinagar<br />Visakhapatnam – 530007, Andhra Pradesh</span>
                 </div>
-                <div className="footer-contact-item">
-                  <span className="contact-icon">📞</span>
-                  <a href="tel:+916305650469">+91 63056 50469</a>
-                </div>
+                
                 <div className="footer-contact-item">
                   <span className="contact-icon">✉️</span>
-                  <a href="mailto:nagalakshmiakurathi.ak@gmail.com">nagalakshmiakurathi.ak@gmail.com</a>
+                  <a href="mailto:nachiconsultant@gmail.com">nachiconsultant@gmail.com</a>
                 </div>
-                <div className="footer-contact-item">
-                  <span className="contact-icon">💬</span>
-                  <a
-                    href="https://wa.me/916305650469?text=Hello%20Nachi%20Consultation%2C%20I%20would%20like%20to%20enquire%20about%20your%20services."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    WhatsApp Us
-                  </a>
-                </div>
+                
                 <div className="footer-contact-item">
                   <span className="contact-icon">🕐</span>
                   <span>Mon–Sat: 9:00 AM – 6:00 PM</span>
