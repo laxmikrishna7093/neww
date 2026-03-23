@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import Sidebar from '@/components/admin/Sidebar';
@@ -8,46 +8,12 @@ const DEPARTMENTS  = ['CMR', 'MAX', 'Style Union', 'Trands'];
 const POSITIONS    = ['Housekeeping', 'Security', 'Customer Support', 'Customer Associate', 'Driver', 'Mover'];
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-// ✅ IMPORTANT: These keys must match exactly — do NOT change them
-const LS_KEY_EMPLOYEES = 'emp_management_employees';
-const LS_KEY_LAST_CODE = 'emp_management_last_code';
-
 const VIEWS = { LIST: 'list', ADD: 'add', IDCARD: 'idcard' };
 const EMPTY_FORM = {
   empCode: '', firstName: '', lastName: '', email: '', phone: '',
   department: '', position: '', salary: '', reportingManager: '',
   gender: '', bloodGroup: '', employmentType: 'Full Time', doj: '',
 };
-
-// ✅ Load from localStorage — data persists across refresh & close
-function loadEmployees() {
-  try {
-    const raw = localStorage.getItem(LS_KEY_EMPLOYEES);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch { return []; }
-}
-
-// ✅ Save to localStorage
-function saveEmployees(list) {
-  try {
-    localStorage.setItem(LS_KEY_EMPLOYEES, JSON.stringify(list));
-  } catch (e) {
-    console.error('Failed to save employees:', e);
-  }
-}
-
-// ✅ FIX: getNextCode only called at SAVE time, not when form opens
-function getNextCode() {
-  try {
-    const raw  = localStorage.getItem(LS_KEY_LAST_CODE);
-    const last = parseInt(raw || '5000', 10);
-    const next = isNaN(last) ? 5001 : last + 1;
-    localStorage.setItem(LS_KEY_LAST_CODE, String(next));
-    return String(next);
-  } catch { return '5001'; }
-}
 
 // ── SIGNED CLOUDINARY UPLOAD ──────────────────────────────────
 async function uploadToCloudinary(file, empCode, fileType) {
@@ -71,7 +37,7 @@ async function uploadToCloudinary(file, empCode, fileType) {
 
 function validateFile(file) {
   if (!file) return null;
-  if (file.size > 5 * 1024 * 1024) return 'File exceeds 5MB limit.';
+  if (file.size > 200 * 1024 * 1024) return 'File exceeds 200kb limit.';
   if (!['image/jpeg', 'image/png', 'image/webp', 'application/pdf'].includes(file.type))
     return 'Only JPG, PNG, WEBP, PDF allowed.';
   return null;
@@ -86,13 +52,13 @@ const C = {
   error: '#dc2626', errorBg: '#fef2f2', errorBor: '#fecaca',
   panelHdr: '#5a7a9a', tableBorder: '#e5e7eb',
 };
-const inputSt     = { width:'100%', padding:'9px 12px', border:`1px solid ${C.border}`, borderRadius:'6px', background:C.inputBg, fontSize:'13px', color:C.text, boxSizing:'border-box', outline:'none', marginTop:'4px' };
-const selectSt    = { ...inputSt, cursor:'pointer', appearance:'none', WebkitAppearance:'none', backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`, backgroundRepeat:'no-repeat', backgroundPosition:'right 10px center', paddingRight:'30px' };
-const labelSt     = { fontSize:'12px', fontWeight:600, color:C.label, display:'block' };
-const btnPrimary  = (dis) => ({ padding:'9px 24px', background:dis?'#93c5fd':C.accent, border:'none', borderRadius:'6px', color:'#fff', fontWeight:700, fontSize:'13px', cursor:dis?'not-allowed':'pointer', display:'flex', alignItems:'center', gap:'6px' });
-const btnSecondary= { padding:'9px 20px', background:'#f3f4f6', border:`1px solid ${C.border}`, borderRadius:'6px', color:C.label, fontWeight:600, fontSize:'13px', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px' };
-const sectionTitle= { margin:'0 0 14px', fontSize:'12px', fontWeight:700, color:C.headerBg, textTransform:'uppercase', letterSpacing:'.07em', borderBottom:'2px solid #e9f0fb', paddingBottom:'6px' };
-const grid2       = { display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))', gap:'14px' };
+const inputSt      = { width:'100%', padding:'9px 12px', border:`1px solid ${C.border}`, borderRadius:'6px', background:C.inputBg, fontSize:'13px', color:C.text, boxSizing:'border-box', outline:'none', marginTop:'4px' };
+const selectSt     = { ...inputSt, cursor:'pointer', appearance:'none', WebkitAppearance:'none', backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`, backgroundRepeat:'no-repeat', backgroundPosition:'right 10px center', paddingRight:'30px' };
+const labelSt      = { fontSize:'12px', fontWeight:600, color:C.label, display:'block' };
+const btnPrimary   = (dis) => ({ padding:'9px 24px', background:dis?'#93c5fd':C.accent, border:'none', borderRadius:'6px', color:'#fff', fontWeight:700, fontSize:'13px', cursor:dis?'not-allowed':'pointer', display:'flex', alignItems:'center', gap:'6px' });
+const btnSecondary = { padding:'9px 20px', background:'#f3f4f6', border:`1px solid ${C.border}`, borderRadius:'6px', color:C.label, fontWeight:600, fontSize:'13px', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px' };
+const sectionTitle = { margin:'0 0 14px', fontSize:'12px', fontWeight:700, color:C.headerBg, textTransform:'uppercase', letterSpacing:'.07em', borderBottom:'2px solid #e9f0fb', paddingBottom:'6px' };
+const grid2        = { display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))', gap:'14px' };
 
 function F({ label, children }) { return <div><label style={labelSt}>{label}</label>{children}</div>; }
 
@@ -114,7 +80,7 @@ function UploadBox({ label, file, setFile, preview, uploading, error, accept='.p
               : <img src={preview} alt="preview" style={{ maxHeight:'70px', maxWidth:'100%', borderRadius:'4px', objectFit:'cover' }}/>
             : <>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={C.accent} strokeWidth="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                <span style={{ fontSize:'11px', color:C.muted }}>Click · JPG/PNG/PDF/WEBP · max 5MB</span>
+                <span style={{ fontSize:'11px', color:C.muted }}>Click · JPG/PNG/PDF/WEBP · max 200kb</span>
               </>
         }
         <input ref={ref} type="file" accept={accept} style={{ display:'none' }} onChange={e => { const f=e.target.files?.[0]; if(f) setFile(f); e.target.value=''; }}/>
@@ -130,8 +96,8 @@ function IDCardFront({ emp, cardRef }) {
   return (
     <div ref={cardRef} style={{ width:'260px', height:'410px', background:'#111111', borderRadius:'14px', display:'flex', flexDirection:'column', alignItems:'center', fontFamily:"'Segoe UI',sans-serif", overflow:'hidden', flexShrink:0, boxShadow:'0 8px 32px rgba(0,0,0,0.4)' }}>
       <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'1.2rem 1rem 1rem', width:'100%', background:'#111111' }}>
-        <div style={{ marginBottom:'1rem', textAlign:'center' }}>
-          <img src="/logo.png" alt="Logo" style={{ width:'150px', height:'95px', objectFit:'contain', filter:'invert(1)', display:'block', margin:'0 auto' }} onError={e => { e.target.style.display='none'; }}/>
+        <div style={{ marginBottom:'0.8rem', textAlign:'center' }}>
+          <img src="/logo.png" alt="Logo" style={{ width:'140px', height:'80px', objectFit:'contain', filter:'invert(1)', display:'block', margin:'0 auto' }} onError={e => { e.target.style.display='none'; }}/>
         </div>
         <div style={{ width:'140px', height:'150px', background:'#fff', borderRadius:'6px', overflow:'hidden', display:'flex', alignItems:'center', justifyContent:'center' }}>
           {emp?.photoUrl
@@ -165,7 +131,7 @@ function IDCardBack({ emp, cardRef }) {
   return (
     <div ref={cardRef} style={{ width:'260px', height:'410px', background:'#111111', borderRadius:'14px', display:'flex', flexDirection:'column', alignItems:'center', fontFamily:"'Segoe UI',sans-serif", overflow:'hidden', flexShrink:0, boxShadow:'0 8px 32px rgba(0,0,0,0.4)', padding:'1.1rem 1.2rem 0.9rem' }}>
       <div style={{ textAlign:'center', marginBottom:'0.8rem', width:'100%' }}>
-        <img src="/logo.png" alt="Logo" style={{ width:'100px', height:'60px', objectFit:'contain', filter:'invert(1)', display:'block', margin:'0 auto' }} onError={e => { e.target.style.display='none'; }}/>
+        <img src="/logo.png" alt="Logo" style={{ width:'130px', height:'75px', objectFit:'contain', filter:'invert(1)', display:'block', margin:'0 auto' }} onError={e => { e.target.style.display='none'; }}/>
       </div>
       <div style={{ width:'100%', marginBottom:'0.5rem' }}>
         <p style={{ margin:0, fontSize:'0.78rem', fontWeight:700, color:'#ffffff' }}>Instructions</p>
@@ -192,43 +158,55 @@ function IDCardBack({ emp, cardRef }) {
 // ── MAIN PAGE ─────────────────────────────────────────────────
 export default function EmployeesPage() {
   const router = useRouter();
-  const [view,          setView]          = useState(VIEWS.LIST);
-  const [employees,     setEmployees]     = useState([]);
-  const [filtered,      setFiltered]      = useState([]);
-  const [rowsToShow,    setRowsToShow]    = useState(50);
-  const [search,        setSearch]        = useState({ empCode:'', firstName:'', lastName:'', reportingManager:'', doj:'', status:'', employmentType:'', letterStatus:'' });
-  const [editingEmp,    setEditingEmp]    = useState(null);
-  const [form,          setForm]          = useState(EMPTY_FORM);
-  const [photoFile,     setPhotoFile]     = useState(null);
-  const [panFile,       setPanFile]       = useState(null);
-  const [aadhaarFile,   setAadhaarFile]   = useState(null);
-  const [photoPreview,  setPhotoPreview]  = useState('');
-  const [panPreview,    setPanPreview]    = useState('');
-  const [aadhaarPrev,   setAadhaarPrev]   = useState('');
-  const [photoUploading,setPhotoUploading]= useState(false);
-  const [panUploading,  setPanUploading]  = useState(false);
-  const [aadhaarUpl,    setAadhaarUpl]    = useState(false);
-  const [photoErr,      setPhotoErr]      = useState('');
-  const [panErr,        setPanErr]        = useState('');
-  const [aadhaarErr,    setAadhaarErr]    = useState('');
-  const [photoUrl,      setPhotoUrl]      = useState('');
-  const [panUrl,        setPanUrl]        = useState('');
-  const [aadhaarUrl,    setAadhaarUrl]    = useState('');
-  const [formMsg,       setFormMsg]       = useState('');
-  const [saving,        setSaving]        = useState(false);
-  const [selectedEmp,   setSelectedEmp]   = useState(null);
-  const [flipped,       setFlipped]       = useState(false);
+  const [view,           setView]           = useState(VIEWS.LIST);
+  const [employees,      setEmployees]      = useState([]);
+  const [filtered,       setFiltered]       = useState([]);
+  const [loading,        setLoading]        = useState(true);
+  const [rowsToShow,     setRowsToShow]     = useState(50);
+  const [search,         setSearch]         = useState({ empCode:'', firstName:'', lastName:'', reportingManager:'', status:'', employmentType:'' });
+  const [editingEmp,     setEditingEmp]     = useState(null);
+  const [form,           setForm]           = useState(EMPTY_FORM);
+  const [photoFile,      setPhotoFile]      = useState(null);
+  const [panFile,        setPanFile]        = useState(null);
+  const [aadhaarFile,    setAadhaarFile]    = useState(null);
+  const [photoPreview,   setPhotoPreview]   = useState('');
+  const [panPreview,     setPanPreview]     = useState('');
+  const [aadhaarPrev,    setAadhaarPrev]    = useState('');
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const [panUploading,   setPanUploading]   = useState(false);
+  const [aadhaarUpl,     setAadhaarUpl]     = useState(false);
+  const [photoErr,       setPhotoErr]       = useState('');
+  const [panErr,         setPanErr]         = useState('');
+  const [aadhaarErr,     setAadhaarErr]     = useState('');
+  const [photoUrl,       setPhotoUrl]       = useState('');
+  const [panUrl,         setPanUrl]         = useState('');
+  const [aadhaarUrl,     setAadhaarUrl]     = useState('');
+  const [formMsg,        setFormMsg]        = useState('');
+  const [saving,         setSaving]         = useState(false);
+  const [selectedEmp,    setSelectedEmp]    = useState(null);
+  const [flipped,        setFlipped]        = useState(false);
   const frontRef = useRef();
   const backRef  = useRef();
 
-  // ✅ Load employees from localStorage on mount — persists on refresh
-  useEffect(() => {
-    const list = loadEmployees();
-    setEmployees(list);
-    setFiltered(list);
+  // ── Fetch all employees from MongoDB ──────────────────────
+  const fetchEmployees = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res  = await fetch('/api/admin/employees');
+      if (!res.ok) throw new Error('Failed to load');
+      const data = await res.json();
+      setEmployees(data);
+      setFiltered(data);
+    } catch (err) {
+      console.error('Fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  // ── Auto upload photo ──
+  useEffect(() => { fetchEmployees(); }, [fetchEmployees]);
+
+  // ── Auto-upload photo ──
   useEffect(() => {
     if (!photoFile) return;
     const err = validateFile(photoFile);
@@ -240,7 +218,6 @@ export default function EmployeesPage() {
     (async () => {
       setPhotoUploading(true);
       try {
-        // Use empCode or 'new' as folder — will be renamed on save if needed
         const code = (form.empCode && form.empCode !== 'AUTO') ? form.empCode : 'new';
         const url  = await uploadToCloudinary(photoFile, code, 'PHOTO');
         setPhotoUrl(url);
@@ -249,7 +226,7 @@ export default function EmployeesPage() {
     })();
   }, [photoFile]);
 
-  // ── Auto upload PAN ──
+  // ── Auto-upload PAN ──
   useEffect(() => {
     if (!panFile) return;
     const err = validateFile(panFile);
@@ -267,7 +244,7 @@ export default function EmployeesPage() {
     })();
   }, [panFile]);
 
-  // ── Auto upload Aadhaar ──
+  // ── Auto-upload Aadhaar ──
   useEffect(() => {
     if (!aadhaarFile) return;
     const err = validateFile(aadhaarFile);
@@ -285,15 +262,23 @@ export default function EmployeesPage() {
     })();
   }, [aadhaarFile]);
 
-  // ✅ openAdd — does NOT generate empCode (no wasted codes on Back)
-  function openAdd() {
+  // ── Open Add form ──
+  async function openAdd() {
     setEditingEmp(null);
-    setForm({ ...EMPTY_FORM, empCode: 'AUTO' }); // placeholder only
     resetFileStates();
     setFormMsg('');
+    // Get next code from server
+    try {
+      const res  = await fetch('/api/admin/employees/next-code');
+      const data = await res.json();
+      setForm({ ...EMPTY_FORM, empCode: data.nextCode || 'AUTO' });
+    } catch {
+      setForm({ ...EMPTY_FORM, empCode: 'AUTO' });
+    }
     setView(VIEWS.ADD);
   }
 
+  // ── Open Edit form ──
   function openEdit(emp) {
     setEditingEmp(emp);
     setForm({
@@ -330,10 +315,11 @@ export default function EmployeesPage() {
     setPhotoErr(''); setPanErr(''); setAadhaarErr('');
   }
 
+  // ── Save to MongoDB ──
   async function handleSave() {
-    if (!form.firstName.trim()) { setFormMsg('❌ First Name is required.'); return; }
-    if (!editingEmp && !photoUrl && !photoFile) { setFormMsg('❌ Employee Photo is required.'); return; }
-    if (photoUploading || panUploading || aadhaarUpl) { setFormMsg('⏳ Please wait, upload in progress…'); return; }
+    if (!form.firstName.trim())                        { setFormMsg('❌ First Name is required.'); return; }
+    if (!editingEmp && !photoUrl && !photoFile)        { setFormMsg('❌ Employee Photo is required.'); return; }
+    if (photoUploading || panUploading || aadhaarUpl)  { setFormMsg('⏳ Please wait, upload in progress…'); return; }
 
     if (editingEmp) {
       const ok = confirm(`Update employee ${form.firstName} ${form.lastName} (${form.empCode})?\n\nEmployee code will NOT change.`);
@@ -344,64 +330,71 @@ export default function EmployeesPage() {
     setFormMsg('');
 
     try {
-      const existing = loadEmployees();
-
       if (editingEmp) {
-        // ✅ UPDATE — empCode NEVER changes
-        const { empCode: _skip, ...formWithoutCode } = form;
-        const updated = existing.map(e =>
-          e._id === editingEmp._id
-            ? {
-                ...e,
-                ...formWithoutCode,
-                empCode: e.empCode, // always keep original code
-                name: `${form.firstName} ${form.lastName}`.trim(),
-                salary: Number(form.salary) || 0,
-                ...(photoUrl   && { photoUrl }),
-                ...(panUrl     && { panCard: panUrl }),
-                ...(aadhaarUrl && { aadhaar: aadhaarUrl }),
-              }
-            : e
-        );
-        saveEmployees(updated);
-        setEmployees(updated);
-        setFiltered(updated);
+        // ── UPDATE ──
+        const payload = {
+          id:               editingEmp._id,
+          firstName:        form.firstName,
+          lastName:         form.lastName,
+          email:            form.email,
+          phone:            form.phone,
+          department:       form.department,
+          position:         form.position,
+          salary:           Number(form.salary) || 0,
+          reportingManager: form.reportingManager,
+          gender:           form.gender,
+          bloodGroup:       form.bloodGroup,
+          employmentType:   form.employmentType,
+          doj:              form.doj,
+          ...(photoUrl   && { photoUrl }),
+          ...(panUrl     && { panCard: panUrl }),
+          ...(aadhaarUrl && { aadhaar: aadhaarUrl }),
+        };
+
+        const res = await fetch('/api/admin/employees', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Update failed');
         setFormMsg('✅ Employee updated successfully!');
 
       } else {
-        // ✅ ADD NEW — generate empCode HERE at save time (not on form open)
-        const newCode = getNextCode(); // ← only called here, never on Back
-
-        const newEmp = {
-          _id:          `local_${Date.now()}`,
-          empCode:      newCode,           // ✅ fresh code assigned at save
-          firstName:    form.firstName,
-          lastName:     form.lastName,
-          email:        form.email,
-          phone:        form.phone,
-          department:   form.department,
-          position:     form.position,
-          salary:       Number(form.salary) || 0,
+        // ── CREATE ──
+        const payload = {
+          empCode:          form.empCode,
+          firstName:        form.firstName,
+          lastName:         form.lastName,
+          email:            form.email,
+          phone:            form.phone,
+          department:       form.department,
+          position:         form.position,
+          salary:           Number(form.salary) || 0,
           reportingManager: form.reportingManager,
-          gender:       form.gender,
-          bloodGroup:   form.bloodGroup,
-          employmentType: form.employmentType,
-          doj:          form.doj,
-          name:         `${form.firstName} ${form.lastName}`.trim(),
-          status:       'Existing',
-          letterStatus: 'Pending',
+          gender:           form.gender,
+          bloodGroup:       form.bloodGroup,
+          employmentType:   form.employmentType,
+          doj:              form.doj,
+          status:           'Existing',
+          letterStatus:     'Pending',
           photoUrl,
-          panCard:      panUrl,
-          aadhaar:      aadhaarUrl,
-          createdAt:    new Date().toISOString(),
+          panCard:          panUrl,
+          aadhaar:          aadhaarUrl,
         };
 
-        const updated = [...existing, newEmp];
-        saveEmployees(updated);   // ✅ saves to localStorage
-        setEmployees(updated);
-        setFiltered(updated);
+        const res = await fetch('/api/admin/employees', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Save failed');
         setFormMsg('✅ Employee saved successfully!');
       }
+
+      // Refresh list from MongoDB
+      await fetchEmployees();
 
       setTimeout(() => {
         setView(VIEWS.LIST);
@@ -416,12 +409,20 @@ export default function EmployeesPage() {
     }
   }
 
-  function handleDelete(id) {
-    if (!confirm('Delete this employee?')) return;
-    const updated = employees.filter(e => e._id !== id);
-    saveEmployees(updated);
-    setEmployees(updated);
-    applyFilters(search, updated);
+  // ── Delete from MongoDB ──
+  async function handleDelete(id) {
+    if (!confirm('Delete this employee? This cannot be undone.')) return;
+    try {
+      const res = await fetch('/api/admin/employees', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      if (!res.ok) { const d = await res.json(); throw new Error(d.error); }
+      await fetchEmployees();
+    } catch (err) {
+      alert('Delete failed: ' + err.message);
+    }
   }
 
   function handleSearchChange(key, value) {
@@ -442,8 +443,7 @@ export default function EmployeesPage() {
   }
 
   function resetFilters() {
-    const e = { empCode:'', firstName:'', lastName:'', reportingManager:'', doj:'', status:'', employmentType:'', letterStatus:'' };
-    setSearch(e);
+    setSearch({ empCode:'', firstName:'', lastName:'', reportingManager:'', status:'', employmentType:'' });
     setFiltered(employees);
   }
 
@@ -485,14 +485,14 @@ export default function EmployeesPage() {
             {/* ══ LIST ══ */}
             {view === VIEWS.LIST && (
               <>
-                {/* Search panel */}
+                {/* Search */}
                 <div style={{ background:'#fff', borderRadius:'6px', border:`1px solid ${C.border}`, marginBottom:'16px', overflow:'hidden' }}>
                   <div style={{ background:C.panelHdr, padding:'10px 16px' }}>
                     <span style={{ color:'#fff', fontWeight:600, fontSize:'14px' }}>Search</span>
                   </div>
                   <div style={{ padding:'12px 16px' }}>
                     <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))', gap:'8px', marginBottom:'10px' }}>
-                      {[['empCode','Employee Code'],['firstName','First Name'],['lastName','Last Name'],['reportingManager','Rep. Manager'],['doj','Date of Joining']].map(([k,ph]) => (
+                      {[['empCode','Employee Code'],['firstName','First Name'],['lastName','Last Name'],['reportingManager','Rep. Manager']].map(([k,ph]) => (
                         <input key={k} placeholder={ph} value={search[k]} onChange={e => handleSearchChange(k,e.target.value)} style={{ width:'100%', padding:'7px 10px', border:`1px solid #d1d5db`, borderRadius:'4px', fontSize:'13px', color:C.text, background:'#fff', boxSizing:'border-box' }}/>
                       ))}
                       <select value={search.status} onChange={e => handleSearchChange('status',e.target.value)} style={{ width:'100%', padding:'7px 10px', border:`1px solid #d1d5db`, borderRadius:'4px', fontSize:'13px', color:C.text, background:'#fff', cursor:'pointer' }}>
@@ -508,12 +508,15 @@ export default function EmployeesPage() {
                   </div>
                 </div>
 
-                {/* Employee table */}
+                {/* Table */}
                 <div style={{ background:'#fff', borderRadius:'6px', border:`1px solid ${C.border}`, overflow:'hidden' }}>
                   <div style={{ background:C.panelHdr, padding:'10px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'12px' }}>
-                    <span style={{ color:'#fff', fontWeight:600, fontSize:'14px' }}>List Of Employees ({filtered.length})</span>
+                    <span style={{ color:'#fff', fontWeight:600, fontSize:'14px' }}>
+                      List Of Employees ({filtered.length})
+                    </span>
                     <div style={{ display:'flex', gap:'8px' }}>
                       <button onClick={() => router.push('/admin/dashboard')} style={{ background:'rgba(255,255,255,0.15)', border:'1px solid rgba(255,255,255,0.3)', borderRadius:'4px', color:'#fff', padding:'6px 14px', cursor:'pointer', fontSize:'13px', fontWeight:600 }}>← Back</button>
+                      <button onClick={fetchEmployees} style={{ background:'rgba(255,255,255,0.15)', border:'1px solid rgba(255,255,255,0.3)', borderRadius:'4px', color:'#fff', padding:'6px 14px', cursor:'pointer', fontSize:'13px', fontWeight:600 }}>🔄 Refresh</button>
                       <button onClick={() => { setSelectedEmp(employees[0]||null); setFlipped(false); setView(VIEWS.IDCARD); }} style={{ background:'rgba(255,255,255,0.15)', border:'1px solid rgba(255,255,255,0.3)', borderRadius:'4px', color:'#fff', padding:'6px 14px', cursor:'pointer', fontSize:'13px', fontWeight:600 }}>🪪 ID Cards</button>
                       <button onClick={openAdd} style={{ background:'rgba(255,255,255,0.2)', border:'none', borderRadius:'4px', color:'#fff', padding:'6px 14px', cursor:'pointer', fontSize:'13px', fontWeight:700 }}>+ Add Employee</button>
                     </div>
@@ -528,54 +531,63 @@ export default function EmployeesPage() {
                     </div>
                   </div>
 
-                  <div style={{ width:'100%', overflowX:'auto' }}>
-                    <table style={{ width:'100%', borderCollapse:'collapse', fontSize:'12px', minWidth:'1100px' }}>
-                      <thead>
-                        <tr style={{ background:'#f9fafb', borderBottom:`2px solid ${C.tableBorder}` }}>
-                          {['Emp Code','First Name','Last Name','Department','Position','Gender','Blood Group','DOJ','Emp Type','Rep. Manager','Status','Actions'].map((h,i) => (
-                            <th key={i} style={{ padding:'10px', textAlign:'left', fontWeight:700, color:'#374151', fontSize:'12px', whiteSpace:'nowrap' }}>{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {displayed.length === 0
-                          ? <tr><td colSpan={12} style={{ padding:'40px', textAlign:'center', color:C.muted }}>
-                              No employees found. <button onClick={openAdd} style={{ color:C.accent, background:'none', border:'none', cursor:'pointer', fontWeight:600 }}>Add first employee →</button>
-                            </td></tr>
-                          : displayed.map((emp,i) => {
-                            const rowBg = i%2===0 ? '#fff' : '#fafafa';
-                            return (
-                              <tr key={emp._id} style={{ borderBottom:`1px solid ${C.tableBorder}`, background:rowBg }} onMouseEnter={e=>e.currentTarget.style.background='#eff6ff'} onMouseLeave={e=>e.currentTarget.style.background=rowBg}>
-                                <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap', fontWeight:600 }}>{emp.empCode||'—'}</td>
-                                <td style={{ padding:'9px 10px', color:'#111827', fontWeight:600, whiteSpace:'nowrap' }}>{emp.firstName||'—'}</td>
-                                <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.lastName||'—'}</td>
-                                <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.department||'—'}</td>
-                                <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.position||'—'}</td>
-                                <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.gender||'—'}</td>
-                                <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.bloodGroup||'—'}</td>
-                                <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.doj?new Date(emp.doj).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—'}</td>
-                                <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.employmentType||'Full Time'}</td>
-                                <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.reportingManager||'—'}</td>
-                                <td style={{ padding:'9px 10px', whiteSpace:'nowrap' }}><span style={{ color:statusColor(emp.status), fontWeight:600 }}>{emp.status||'—'}</span></td>
-                                <td style={{ padding:'9px 10px', whiteSpace:'nowrap' }}>
-                                  <div style={{ display:'flex', gap:'5px' }}>
-                                    <button title="Edit" onClick={() => openEdit(emp)} style={{ background:'#eff6ff', border:'1px solid #bfdbfe', cursor:'pointer', color:'#2563eb', padding:'4px 8px', borderRadius:'4px', display:'flex', alignItems:'center', gap:'3px', fontSize:'11px', fontWeight:600 }}>
-                                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                      Edit
-                                    </button>
-                                    <button title="ID Card" onClick={() => { setSelectedEmp(emp); setFlipped(false); setView(VIEWS.IDCARD); }} style={{ background:'#f0fdf4', border:'1px solid #bbf7d0', cursor:'pointer', color:'#16a34a', padding:'4px 8px', borderRadius:'4px', display:'flex', alignItems:'center' }}>🪪</button>
-                                    <button title="Delete" onClick={() => handleDelete(emp._id)} style={{ background:'#fef2f2', border:'1px solid #fecaca', cursor:'pointer', color:'#dc2626', padding:'4px 8px', borderRadius:'4px', display:'flex', alignItems:'center' }}>
-                                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-                                    </button>
-                                  </div>
-                                </td>
-                              </tr>
-                            );
-                          })
-                        }
-                      </tbody>
-                    </table>
-                  </div>
+                  {/* Loading state */}
+                  {loading ? (
+                    <div style={{ padding:'60px', textAlign:'center', color:C.muted }}>
+                      <div style={{ fontSize:'32px', marginBottom:'8px' }}>⏳</div>
+                      <p>Loading employees from database…</p>
+                    </div>
+                  ) : (
+                    <div style={{ width:'100%', overflowX:'auto' }}>
+                      <table style={{ width:'100%', borderCollapse:'collapse', fontSize:'12px', minWidth:'1100px' }}>
+                        <thead>
+                          <tr style={{ background:'#f9fafb', borderBottom:`2px solid ${C.tableBorder}` }}>
+                            {['Emp Code','First Name','Last Name','Department','Position','Gender','Blood Group','DOJ','Emp Type','Rep. Manager','Status','Actions'].map((h,i) => (
+                              <th key={i} style={{ padding:'10px', textAlign:'left', fontWeight:700, color:'#374151', fontSize:'12px', whiteSpace:'nowrap' }}>{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {displayed.length === 0
+                            ? <tr><td colSpan={12} style={{ padding:'40px', textAlign:'center', color:C.muted }}>
+                                No employees found.{' '}
+                                <button onClick={openAdd} style={{ color:C.accent, background:'none', border:'none', cursor:'pointer', fontWeight:600 }}>Add first employee →</button>
+                              </td></tr>
+                            : displayed.map((emp,i) => {
+                              const rowBg = i%2===0 ? '#fff' : '#fafafa';
+                              return (
+                                <tr key={emp._id} style={{ borderBottom:`1px solid ${C.tableBorder}`, background:rowBg }} onMouseEnter={e=>e.currentTarget.style.background='#eff6ff'} onMouseLeave={e=>e.currentTarget.style.background=rowBg}>
+                                  <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap', fontWeight:600 }}>{emp.empCode||'—'}</td>
+                                  <td style={{ padding:'9px 10px', color:'#111827', fontWeight:600, whiteSpace:'nowrap' }}>{emp.firstName||'—'}</td>
+                                  <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.lastName||'—'}</td>
+                                  <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.department||'—'}</td>
+                                  <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.position||'—'}</td>
+                                  <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.gender||'—'}</td>
+                                  <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.bloodGroup||'—'}</td>
+                                  <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.doj?new Date(emp.doj).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—'}</td>
+                                  <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.employmentType||'Full Time'}</td>
+                                  <td style={{ padding:'9px 10px', color:'#111827', whiteSpace:'nowrap' }}>{emp.reportingManager||'—'}</td>
+                                  <td style={{ padding:'9px 10px', whiteSpace:'nowrap' }}><span style={{ color:statusColor(emp.status), fontWeight:600 }}>{emp.status||'—'}</span></td>
+                                  <td style={{ padding:'9px 10px', whiteSpace:'nowrap' }}>
+                                    <div style={{ display:'flex', gap:'5px' }}>
+                                      <button title="Edit" onClick={() => openEdit(emp)} style={{ background:'#eff6ff', border:'1px solid #bfdbfe', cursor:'pointer', color:'#2563eb', padding:'4px 8px', borderRadius:'4px', display:'flex', alignItems:'center', gap:'3px', fontSize:'11px', fontWeight:600 }}>
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                        Edit
+                                      </button>
+                                      <button title="ID Card" onClick={() => { setSelectedEmp(emp); setFlipped(false); setView(VIEWS.IDCARD); }} style={{ background:'#f0fdf4', border:'1px solid #bbf7d0', cursor:'pointer', color:'#16a34a', padding:'4px 8px', borderRadius:'4px', display:'flex', alignItems:'center' }}>🪪</button>
+                                      <button title="Delete" onClick={() => handleDelete(emp._id)} style={{ background:'#fef2f2', border:'1px solid #fecaca', cursor:'pointer', color:'#dc2626', padding:'4px 8px', borderRadius:'4px', display:'flex', alignItems:'center' }}>
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               </>
             )}
@@ -592,7 +604,7 @@ export default function EmployeesPage() {
                     <p style={{ margin:0, fontSize:'12px', color:C.muted }}>
                       {editingEmp
                         ? <>Employee Code: <b style={{ color:C.accent }}>{form.empCode}</b> (will not change)</>
-                        : <i style={{ color:C.muted }}>Employee Code will be assigned when you save</i>
+                        : <>Employee Code: <b style={{ color:C.accent }}>{form.empCode}</b> (auto-assigned)</>
                       }
                     </p>
                   </div>
@@ -606,21 +618,9 @@ export default function EmployeesPage() {
 
                     <h3 style={sectionTitle}>Basic Information</h3>
                     <div style={grid2}>
-                      {/* ✅ Employee Code field */}
                       <div>
                         <label style={labelSt}>Employee Code</label>
-                        <input
-                          value={form.empCode === 'AUTO' ? 'Will be assigned on save' : form.empCode}
-                          readOnly
-                          style={{
-                            ...inputSt,
-                            background: '#e9f0fb',
-                            color: form.empCode === 'AUTO' ? C.muted : C.accent,
-                            fontWeight: 700,
-                            cursor: 'default',
-                            fontStyle: form.empCode === 'AUTO' ? 'italic' : 'normal',
-                          }}
-                        />
+                        <input value={form.empCode} readOnly style={{ ...inputSt, background:'#e9f0fb', color:C.accent, fontWeight:700, cursor:'default' }}/>
                       </div>
                       <div/>
                       <F label="First Name *"><input value={form.firstName} onChange={e=>setForm({...form,firstName:e.target.value})} placeholder="e.g. Ravi" style={inputSt}/></F>
@@ -676,7 +676,7 @@ export default function EmployeesPage() {
                     <div style={{ marginTop:'24px', display:'flex', justifyContent:'flex-end', gap:'10px', borderTop:`1px solid ${C.border}`, paddingTop:'20px' }}>
                       <button onClick={() => { setView(VIEWS.LIST); setEditingEmp(null); }} style={btnSecondary}>← Back</button>
                       <button onClick={handleSave} disabled={saving||anyUploading} style={btnPrimary(saving||anyUploading)}>
-                        {saving?'Saving…':anyUploading?'⏳ Uploading…':<><span>💾</span>{editingEmp?'Update Employee':'Save Employee'}</>}
+                        {saving?'Saving to MongoDB…':anyUploading?'⏳ Uploading…':<><span>💾</span>{editingEmp?'Update Employee':'Save Employee'}</>}
                       </button>
                     </div>
                   </div>
@@ -694,7 +694,6 @@ export default function EmployeesPage() {
                     <p style={{ margin:0, fontSize:'12px', color:C.muted }}>Select an employee · Click the card to flip</p>
                   </div>
                 </div>
-
                 <div style={{ display:'grid', gridTemplateColumns:'1fr 300px', gap:'20px', alignItems:'start' }}>
                   <div style={{ background:'#fff', borderRadius:'10px', border:`1px solid ${C.border}`, overflow:'hidden' }}>
                     <div style={{ background:C.headerBg, padding:'13px 20px' }}><span style={{ color:'#fff', fontWeight:600, fontSize:'14px' }}>Select Employee</span></div>
@@ -722,7 +721,6 @@ export default function EmployeesPage() {
                       {employees.length===0 && <div style={{ textAlign:'center', padding:'30px', color:C.muted }}><div style={{ fontSize:'40px', marginBottom:'8px' }}>👥</div><p>No employees. <button onClick={openAdd} style={{ color:C.accent, background:'none', border:'none', cursor:'pointer', fontWeight:600, fontSize:'13px' }}>Add one</button></p></div>}
                     </div>
                   </div>
-
                   <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'12px' }}>
                     <p style={{ fontSize:'11px', color:C.muted, letterSpacing:'1px', textTransform:'uppercase', alignSelf:'flex-start', margin:0 }}>{flipped?'↻ Back Side':'↻ Front Side'} · Click to flip</p>
                     <div className="id-flip-scene" onClick={() => setFlipped(f=>!f)}>
@@ -741,7 +739,6 @@ export default function EmployeesPage() {
           </div>
         </div>
       </div>
-
       <style>{`
         @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         .id-flip-scene { width:260px; height:410px; perspective:1000px; cursor:pointer; flex-shrink:0; }

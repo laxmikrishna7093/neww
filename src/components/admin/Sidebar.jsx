@@ -25,8 +25,8 @@ export default function Sidebar() {
     <aside style={{
       width: collapsed ? '60px' : '240px',
       minHeight: '100vh',
-      background: '#3BC1A8', /* 👈 CHANGED TO TEAL */
-      color: '#fff',
+      background: '#215E61', /* 👈 CHANGED TO TEAL */
+      color: '#fcfbfb',
       display: 'flex',
       flexDirection: 'column',
       transition: 'width 0.3s',
@@ -70,8 +70,8 @@ export default function Sidebar() {
       {/* Logout */}
       <button onClick={handleLogout}
         style={{
-          margin: '16px', padding: '12px', background: '#ef4444',
-          border: 'none', borderRadius: '8px', color: '#fff',
+          margin: '16px', padding: '12px', background: '#f96f20',
+          border: 'none', borderRadius: '8px', color: '#454343',
           cursor: 'pointer', fontWeight: 600, display: 'flex',
           alignItems: 'center', gap: '8px', justifyContent: collapsed ? 'center' : 'flex-start',
         }}>
