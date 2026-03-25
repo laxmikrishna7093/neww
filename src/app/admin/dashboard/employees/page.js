@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import Sidebar from '@/components/admin/Sidebar';
 
-const DEPARTMENTS  = ['CMR', 'MAX', 'Style Union', 'Trands'];
-const POSITIONS    = ['Housekeeping', 'Security', 'Customer Support', 'Customer Associate', 'Driver', 'Mover'];
+const DEPARTMENTS  = ['CMR', 'MAX', 'Style Union', 'Nachi Consultant', 'Trands'];
+const POSITIONS    = ['Housekeeping', 'staff','Security', 'Customer Support', 'Customer Associate', 'Driver', 'Mover'];
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 const VIEWS = { LIST: 'list', ADD: 'add', IDCARD: 'idcard' };

@@ -35,15 +35,15 @@ export async function POST(request) {
 
     const service = await Service.create({
       title:       body.title,
-      tagline:     body.tagline || '',
+      tagline:     body.tagline     || '',
       tag:         body.tag,
-      accent:      body.accent || '#1B4332',
+      accent:      body.accent      || '#1B4332',
       accentLight: body.accentLight || '#6EE7B7',
-      photo:       body.photo || '',
-      stat:        body.stat || '',
-      statLabel:   body.statLabel || '',
-      desc:        body.desc || '',
-      features:    body.features || [],
+      photo:       body.photo       || '',
+      stat:        body.stat        || '',
+      statLabel:   body.statLabel   || '',
+      desc:        body.desc        || '',
+      features:    body.features    || [],
     });
 
     console.log('✅ Service created:', service.title, service._id);
@@ -61,7 +61,7 @@ export async function POST(request) {
 export async function PUT(request) {
   try {
     await connectDB();
-    const body = await request.json();
+    const body    = await request.json();
     const { _id, ...updateData } = body;
 
     if (!_id) {
@@ -110,11 +110,8 @@ export async function PUT(request) {
 export async function DELETE(request) {
   try {
     await connectDB();
-
-    const body = await request.json();
+    const body  = await request.json();
     const { _id } = body;
-
-    console.log('🗑️ DELETE request received for _id:', _id);
 
     if (!_id) {
       return NextResponse.json(
@@ -126,7 +123,6 @@ export async function DELETE(request) {
     const deleted = await Service.findByIdAndDelete(_id);
 
     if (!deleted) {
-      console.error('❌ Service not found with _id:', _id);
       return NextResponse.json(
         { error: 'Service not found' },
         { status: 404 }
