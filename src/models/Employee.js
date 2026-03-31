@@ -1,4 +1,3 @@
-// src/models/Employee.js
 import mongoose from 'mongoose';
 
 const EmployeeSchema = new mongoose.Schema({
@@ -21,6 +20,28 @@ const EmployeeSchema = new mongoose.Schema({
   photoUrl:         { type: String, default: '' },
   panCard:          { type: String, default: '' },
   aadhaar:          { type: String, default: '' },
+
+  // ── PERSONAL / FAMILY ──
+  spouseOrGuardian: { type: String, default: '' },
+  aadhaarNumber:    { type: String, default: '' },   // text (separate from upload)
+  emergencyContact: { type: String, default: '' },   // name
+  emergencyPhone:   { type: String, default: '' },   // phone number
+  nomineeName:      { type: String, default: '' },   // insurance nominee
+  nomineeRelation:  { type: String, default: '' },   // relation to nominee
+  uanNumber:        { type: String, default: '' },   // PF UAN
+
+  // ── BANK ──
+  bankName:         { type: String, default: '' },
+  accountNumber:    { type: String, default: '' },
+  ifscCode:         { type: String, default: '' },   // salary transfer ki must
+
+  // ── ADDRESS ──
+  addressLine1:     { type: String, default: '' },
+  addressLine2:     { type: String, default: '' },
+  city:             { type: String, default: '' },
+  state:            { type: String, default: '' },
+  pincode:          { type: String, default: '' },
+
 }, { timestamps: true });
 
 export default mongoose.models.Employee || mongoose.model('Employee', EmployeeSchema);

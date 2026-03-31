@@ -64,6 +64,7 @@ function Hero() {
       alignItems: "center", overflow: "hidden", background: "#080C0A",
     }}>
       <div style={{ position: "absolute", inset: "-2%" }}>
+        {/* ✅ LOCAL HERO IMAGE — servicehero.png must be in /public folder */}
         <img
           src="/servicehero.png"
           alt=""
@@ -268,6 +269,13 @@ function ServiceCard({ svc, index }) {
             color: "rgba(60,30,0,0.55)", lineHeight: 1.65, margin: 0,
           }}>{svc.desc}</p>
 
+          {svc.stat && (
+            <div style={{ display: "flex", gap: "0.8rem", alignItems: "center", marginTop: "0.6rem" }}>
+              <span style={{ color: svc.accent || "#E8830A", fontWeight: 800, fontSize: "1.1rem" }}>{svc.stat}</span>
+              <span style={{ color: "rgba(60,30,0,0.45)", fontSize: "0.72rem" }}>{svc.statLabel}</span>
+            </div>
+          )}
+
           <div style={{
             display: "flex", alignItems: "center", justifyContent: "space-between",
             paddingTop: "0.9rem", marginTop: "0.9rem",
@@ -300,6 +308,10 @@ function SkeletonCard() {
   );
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// ✅ 2 NEW STATIC SERVICES — Customer Support Executive & Customer Associate
+// These are hardcoded (not from DB). They use real Pexels photos.
+// ─────────────────────────────────────────────────────────────────────────────
 const EXTRA_SERVICES = [
   {
     _id: "extra-customer-support",
@@ -308,6 +320,9 @@ const EXTRA_SERVICES = [
     desc: "Professionally trained support executives who handle inbound queries, complaints, and escalations with empathy and speed — in-person or remote.",
     tag: "NEW",
     accent: "#E8830A",
+    
+    statLabel: "Customer Satisfaction Rate",
+    // Realistic Pexels photo — smiling call center agent with headset (Yan Krukau)
     photo: "https://images.pexels.com/photos/8867434/pexels-photo-8867434.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
   {
@@ -317,6 +332,9 @@ const EXTRA_SERVICES = [
     desc: "Courteous, well-groomed customer associates placed at retail counters, reception desks, and service points to create a lasting impression for your brand.",
     tag: "NEW",
     accent: "#C0700A",
+    
+    statLabel: "Associates Deployed",
+    // Realistic Pexels photo — call center agents with laptops & headsets (Mikhail Nilov)
     photo: "https://images.pexels.com/photos/7682087/pexels-photo-7682087.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
 ];
@@ -354,6 +372,7 @@ function ServicesSection() {
           0%   { background-position: 200% 0; }
           100% { background-position: -200% 0; }
         }
+        /* ── Responsive grid breakpoints ── */
         @media (max-width: 480px) {
           .svc-grid-3    { grid-template-columns: 1fr !important; }
           .svc-grid-2    { grid-template-columns: 1fr !important; }
@@ -367,6 +386,7 @@ function ServicesSection() {
 
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
 
+        {/* Section Header */}
         <div ref={headerRef} style={{ marginBottom: "clamp(2rem, 4vw, 3.5rem)" }}>
           <div style={{
             display: "flex", alignItems: "center", gap: "0.65rem", marginBottom: "0.85rem",
@@ -397,6 +417,7 @@ function ServicesSection() {
           </div>
         </div>
 
+        {/* ── Loading State ── */}
         {loading && (
           <div>
             <div className="svc-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
@@ -408,6 +429,7 @@ function ServicesSection() {
           </div>
         )}
 
+        {/* ── Error State ── */}
         {!loading && error && (
           <div style={{
             textAlign: "center", padding: "4rem 2rem",
@@ -418,6 +440,7 @@ function ServicesSection() {
           </div>
         )}
 
+        {/* ── Empty State ── */}
         {!loading && !error && services.length === 0 && (
           <div style={{
             textAlign: "center", padding: "4rem 2rem",
@@ -430,6 +453,7 @@ function ServicesSection() {
           </div>
         )}
 
+        {/* ── DB Services Grid ── */}
         {!loading && !error && services.length > 0 && (
           <>
             <div className="svc-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
@@ -453,7 +477,13 @@ function ServicesSection() {
           </>
         )}
 
+        {/* ══════════════════════════════════════════════════════════════════
+            ✅ NEW SECTION: Customer Support Executive + Customer Associate
+            Hardcoded below the DB grid with a styled divider
+        ══════════════════════════════════════════════════════════════════ */}
         <div ref={extraRef} style={{ marginTop: "clamp(2.5rem, 5vw, 4.5rem)" }}>
+
+          {/* Divider with label */}
           <div style={{
             display: "flex", alignItems: "center", gap: "1rem",
             marginBottom: "2rem",
@@ -471,6 +501,7 @@ function ServicesSection() {
             <span style={{ flex: 1, height: "1px", background: "rgba(232,131,10,0.25)" }} />
           </div>
 
+          {/* 2-column responsive grid */}
           <div
             className="svc-extra-row"
             style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1.25rem" }}
@@ -480,6 +511,7 @@ function ServicesSection() {
             ))}
           </div>
         </div>
+        {/* ══════════════════════════════════════════════════════════════════ */}
 
       </div>
     </section>

@@ -27,7 +27,7 @@ export async function GET(req) {
     const query = employeeId ? { employeeId } : {};
 
     const salaries = await Salary.find(query)
-      .populate('employeeId', 'firstName lastName empCode department position photoUrl salary doj')
+      .populate('employeeId', 'firstName lastName empCode department position photoUrl salary doj bankName accountNumber ifscCode uanNumber')
       .sort({ createdAt: -1 })
       .lean();
 
@@ -58,7 +58,6 @@ export async function POST(req) {
     const tDays       = parseInt(totalDays)     || 30;
     const wDays       = parseInt(workedDays)    || tDays;
 
-    // Salary based on worked days
     const perDay      = tDays > 0 ? basicSalary / tDays : 0;
     const earnedSal   = Math.round(perDay * wDays * 100) / 100;
 
@@ -67,14 +66,14 @@ export async function POST(req) {
     const totalDed    = pfAmt + esiAmt;
     const netSalary   = Math.round((earnedSal - totalDed) * 100) / 100;
 
-    // Upsert — update if exists, create if not
     const salary = await Salary.findOneAndUpdate(
       { employeeId, month, year },
       {
         employeeId,
         empCode:  emp.empCode,
-        month, year, uan,
-        basicSalary: earnedSal, // store earned (not full basic)
+        month, year,
+        uan: uan || emp.uanNumber || '',
+        basicSalary: earnedSal,
         totalDays: tDays, workedDays: wDays,
         pf: pfAmt, esi: esiAmt,
         totalDed, netSalary,

@@ -64,7 +64,7 @@ function PayslipDoc({ data }) {
   return (
     <div style={{ width:'794px', background:'#fff', padding:'40px 52px 36px', boxSizing:'border-box', fontFamily:"'Segoe UI',Arial,sans-serif", border:'1px solid #e2e8f0' }}>
 
-      {/* ── Header — bigger logo ── */}
+      {/* ── Header ── */}
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', borderBottom:`3px solid ${C.navy}`, paddingBottom:'16px', marginBottom:'18px' }}>
         <img src="/logo.png" alt="Logo"
           style={{ height:'72px', maxWidth:'200px', objectFit:'contain' }}
@@ -89,7 +89,7 @@ function PayslipDoc({ data }) {
           {[
             ['Employee Name',    fullName,            'Employee ID',   emp.empCode || '—'],
             ['Designation',      emp.position||'—',   'Department',    emp.department||'—'],
-            ['Date of Joining',  doj,                 'UAN',           uan || '—'],
+            ['Date of Joining',  doj,                 'UAN',           uan || emp.uanNumber || '—'],
             ['Pay Period',       `${month} ${year}`,  'Working Days',  `${wDays} / ${tDays}`],
           ].map(([l1,v1,l2,v2], i) => (
             <tr key={i} style={{ borderBottom:`1px solid ${C.border}` }}>
@@ -135,6 +135,27 @@ function PayslipDoc({ data }) {
           </tr>
         </tfoot>
       </table>
+
+      {/* ── Bank Transfer Details ── */}
+      <div style={{ background:'#f0f9ff', border:`1px solid #bae6fd`, borderRadius:'6px', padding:'12px 16px', marginBottom:'18px' }}>
+        <div style={{ fontWeight:700, color:'#0369a1', marginBottom:'10px', fontSize:'11px', textTransform:'uppercase', letterSpacing:'0.5px' }}>
+          🏦 Bank Transfer Details
+        </div>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'10px' }}>
+          <div>
+            <div style={{ fontSize:'10px', color:C.muted, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.4px', marginBottom:'3px' }}>Bank Name</div>
+            <div style={{ fontSize:'12px', fontWeight:700, color:C.text }}>{emp.bankName || '—'}</div>
+          </div>
+          <div>
+            <div style={{ fontSize:'10px', color:C.muted, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.4px', marginBottom:'3px' }}>Account Number</div>
+            <div style={{ fontSize:'12px', fontWeight:700, color:C.text, fontFamily:'monospace', letterSpacing:'1px' }}>{emp.accountNumber || '—'}</div>
+          </div>
+          <div>
+            <div style={{ fontSize:'10px', color:C.muted, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.4px', marginBottom:'3px' }}>IFSC Code</div>
+            <div style={{ fontSize:'12px', fontWeight:700, color:C.text, fontFamily:'monospace' }}>{emp.ifscCode || '—'}</div>
+          </div>
+        </div>
+      </div>
 
       {/* Net Salary */}
       <div style={{ background:C.navy, borderRadius:'6px', padding:'15px 22px', display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'22px' }}>
@@ -198,10 +219,17 @@ export default function PayslipPage() {
 
   useEffect(() => { fetchEmployees(); }, [fetchEmployees]);
 
+  // ── Employee select అయినప్పుడు UAN + bank details auto-fill ──
   useEffect(() => {
     const found = employees.find(e => e._id === empId) || null;
-    setEmp(found); setGenerated(false); setSaved(false);
-    setPf(''); setEsi(''); setUan(''); setTotalDays('30'); setWorkedDays('30');
+    setEmp(found);
+    setGenerated(false);
+    setSaved(false);
+    setPf('');
+    setEsi('');
+    setUan(found?.uanNumber || '');   // UAN auto-fill from employee profile
+    setTotalDays('30');
+    setWorkedDays('30');
   }, [empId, employees]);
 
   useEffect(() => {
@@ -290,7 +318,6 @@ export default function PayslipPage() {
                 <h1 style={{ margin:0, fontSize:'20px', fontWeight:700, color:C.navy }}>Payslip Generator</h1>
                 <p style={{ margin:'2px 0 0', fontSize:'12px', color:C.muted }}>Data from MongoDB · Saved payslips persist across refresh & logout</p>
               </div>
-              {/* ── Saved Payslips Button ── */}
               <button
                 onClick={() => router.push('/admin/dashboard/salary/history')}
                 style={{ display:'flex', alignItems:'center', gap:'8px', padding:'10px 20px', background:C.navy, border:'none', borderRadius:'8px', color:'#fff', fontWeight:700, fontSize:'13px', cursor:'pointer', boxShadow:'0 2px 8px rgba(30,58,95,0.25)', fontFamily:'inherit' }}
@@ -317,7 +344,7 @@ export default function PayslipPage() {
               {/* ── LEFT ── */}
               <div style={{ display:'flex', flexDirection:'column', gap:'12px' }}>
 
-                {/* Step 1 */}
+                {/* Step 1 — Select Employee */}
                 <div style={{ background:'#fff', borderRadius:'8px', border:`1px solid ${C.border}`, overflow:'hidden' }}>
                   <div style={{ background:C.hdr, padding:'10px 14px' }}><span style={{ color:'#fff', fontWeight:700, fontSize:'13px' }}>① Select Employee</span></div>
                   <div style={{ padding:'14px' }}>
@@ -352,7 +379,7 @@ export default function PayslipPage() {
                   </div>
                 </div>
 
-                {/* Step 2 */}
+                {/* Step 2 — Pay Period */}
                 <div style={{ background:'#fff', borderRadius:'8px', border:`1px solid ${C.border}`, overflow:'hidden' }}>
                   <div style={{ background:C.hdr, padding:'10px 14px' }}><span style={{ color:'#fff', fontWeight:700, fontSize:'13px' }}>② Pay Period</span></div>
                   <div style={{ padding:'14px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px' }}>
@@ -372,7 +399,7 @@ export default function PayslipPage() {
                   </div>
                 </div>
 
-                {/* Step 3 */}
+                {/* Step 3 — Working Days */}
                 <div style={{ background:'#fff', borderRadius:'8px', border:`1px solid ${C.border}`, overflow:'hidden' }}>
                   <div style={{ background:C.hdr, padding:'10px 14px' }}><span style={{ color:'#fff', fontWeight:700, fontSize:'13px' }}>③ Working Days</span></div>
                   <div style={{ padding:'14px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px' }}>
@@ -396,11 +423,42 @@ export default function PayslipPage() {
                   )}
                 </div>
 
-                {/* Step 4 */}
+                {/* Step 4 — Bank Details (read-only) + Deductions (editable) */}
                 <div style={{ background:'#fff', borderRadius:'8px', border:`1px solid ${C.border}`, overflow:'hidden' }}>
-                  <div style={{ background:C.hdr, padding:'10px 14px' }}><span style={{ color:'#fff', fontWeight:700, fontSize:'13px' }}>④ Deductions</span></div>
+                  <div style={{ background:C.hdr, padding:'10px 14px' }}><span style={{ color:'#fff', fontWeight:700, fontSize:'13px' }}>④ Bank & Deductions</span></div>
                   <div style={{ padding:'14px', display:'flex', flexDirection:'column', gap:'10px' }}>
-                    <div><label style={lSt}>UAN Number (optional)</label><input type="text" placeholder="Enter UAN" value={uan} onChange={e=>{ setUan(e.target.value); setGenerated(false); setSaved(false); }} style={iSt}/></div>
+
+                    {/* Bank Details — auto-filled from employee, read-only */}
+                    <div style={{ background:'#f0f9ff', border:'1px solid #bae6fd', borderRadius:'8px', padding:'10px 12px' }}>
+                      <p style={{ margin:'0 0 8px', fontSize:'11px', fontWeight:700, color:'#0369a1', textTransform:'uppercase', letterSpacing:'0.5px' }}>
+                        🏦 Bank Details (auto from Employee Profile)
+                      </p>
+                      <div style={{ display:'flex', flexDirection:'column', gap:'7px' }}>
+                        <div>
+                          <label style={lSt}>Bank Name</label>
+                          <input readOnly value={emp?.bankName || '—'} style={roSt}/>
+                        </div>
+                        <div>
+                          <label style={lSt}>Account Number</label>
+                          <input readOnly value={emp?.accountNumber || '—'} style={{ ...roSt, fontFamily:'monospace', letterSpacing:'1px' }}/>
+                        </div>
+                        <div>
+                          <label style={lSt}>IFSC Code</label>
+                          <input readOnly value={emp?.ifscCode || '—'} style={{ ...roSt, fontFamily:'monospace', letterSpacing:'1px' }}/>
+                        </div>
+                        <div>
+                          <label style={lSt}>UAN Number</label>
+                          <input readOnly value={emp?.uanNumber || '—'} style={{ ...roSt, fontFamily:'monospace' }}/>
+                        </div>
+                      </div>
+                      {emp && !emp.bankName && (
+                        <p style={{ margin:'8px 0 0', fontSize:'11px', color:'#0369a1' }}>
+                          ℹ️ Bank details empty — add them in <b>Employee Profile</b> to auto-fill here.
+                        </p>
+                      )}
+                    </div>
+
+                    {/* PF & ESI — only these are editable */}
                     <div>
                       <label style={lSt}>PF (₹){basic>0&&<span style={{ fontWeight:400, color:C.muted, textTransform:'none', marginLeft:'4px' }}>(12% = ₹{inr(basic*0.12)})</span>}</label>
                       <input type="number" min="0" placeholder={basic>0?String(Math.round(basic*0.12)):'0'} value={pf} onChange={e=>{ setPf(e.target.value); setGenerated(false); setSaved(false); }} style={iSt}/>

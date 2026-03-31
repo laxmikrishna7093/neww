@@ -13,6 +13,11 @@ const EMPTY_FORM = {
   empCode: '', firstName: '', lastName: '', email: '', phone: '',
   department: '', position: '', salary: '', reportingManager: '',
   gender: '', bloodGroup: '', employmentType: 'Full Time', doj: '',
+  spouseOrGuardian: '',
+  aadhaarNumber: '', emergencyContact: '', emergencyPhone: '',
+  nomineeName: '', nomineeRelation: '', uanNumber: '',
+  bankName: '', accountNumber: '', ifscCode: '',
+  addressLine1: '', addressLine2: '', city: '', state: '', pincode: '',
 };
 
 // ── SIGNED CLOUDINARY UPLOAD ──────────────────────────────────
@@ -35,9 +40,10 @@ async function uploadToCloudinary(file, empCode, fileType) {
   return data.secure_url;
 }
 
+// BUG FIX 1: duplicate function wrapper removed — correct 200KB limit
 function validateFile(file) {
   if (!file) return null;
-  if (file.size > 200 * 1024 * 1024) return 'File exceeds 200kb limit.';
+  if (file.size > 200 * 1024) return 'File exceeds 200 KB limit.';
   if (!['image/jpeg', 'image/png', 'image/webp', 'application/pdf'].includes(file.type))
     return 'Only JPG, PNG, WEBP, PDF allowed.';
   return null;
@@ -188,7 +194,6 @@ export default function EmployeesPage() {
   const frontRef = useRef();
   const backRef  = useRef();
 
-  // ── Fetch all employees from MongoDB ──────────────────────
   const fetchEmployees = useCallback(async () => {
     setLoading(true);
     try {
@@ -206,7 +211,6 @@ export default function EmployeesPage() {
 
   useEffect(() => { fetchEmployees(); }, [fetchEmployees]);
 
-  // ── Auto-upload photo ──
   useEffect(() => {
     if (!photoFile) return;
     const err = validateFile(photoFile);
@@ -226,7 +230,6 @@ export default function EmployeesPage() {
     })();
   }, [photoFile]);
 
-  // ── Auto-upload PAN ──
   useEffect(() => {
     if (!panFile) return;
     const err = validateFile(panFile);
@@ -244,7 +247,6 @@ export default function EmployeesPage() {
     })();
   }, [panFile]);
 
-  // ── Auto-upload Aadhaar ──
   useEffect(() => {
     if (!aadhaarFile) return;
     const err = validateFile(aadhaarFile);
@@ -262,12 +264,10 @@ export default function EmployeesPage() {
     })();
   }, [aadhaarFile]);
 
-  // ── Open Add form ──
   async function openAdd() {
     setEditingEmp(null);
     resetFileStates();
     setFormMsg('');
-    // Get next code from server
     try {
       const res  = await fetch('/api/admin/employees/next-code');
       const data = await res.json();
@@ -278,7 +278,6 @@ export default function EmployeesPage() {
     setView(VIEWS.ADD);
   }
 
-  // ── Open Edit form ──
   function openEdit(emp) {
     setEditingEmp(emp);
     setForm({
@@ -295,6 +294,21 @@ export default function EmployeesPage() {
       bloodGroup:       emp.bloodGroup       || '',
       employmentType:   emp.employmentType   || 'Full Time',
       doj:              emp.doj ? emp.doj.substring(0,10) : '',
+      spouseOrGuardian: emp.spouseOrGuardian || '',
+      aadhaarNumber:    emp.aadhaarNumber    || '',
+      emergencyContact: emp.emergencyContact || '',
+      emergencyPhone:   emp.emergencyPhone   || '',
+      nomineeName:      emp.nomineeName      || '',
+      nomineeRelation:  emp.nomineeRelation  || '',
+      uanNumber:        emp.uanNumber        || '',
+      bankName:         emp.bankName         || '',
+      accountNumber:    emp.accountNumber    || '',
+      ifscCode:         emp.ifscCode         || '',
+      addressLine1:     emp.addressLine1     || '',
+      addressLine2:     emp.addressLine2     || '',
+      city:             emp.city             || '',
+      state:            emp.state            || '',
+      pincode:          emp.pincode          || '',
     });
     setPhotoUrl(emp.photoUrl || '');
     setPhotoPreview(emp.photoUrl || '');
@@ -315,7 +329,7 @@ export default function EmployeesPage() {
     setPhotoErr(''); setPanErr(''); setAadhaarErr('');
   }
 
-  // ── Save to MongoDB ──
+  // BUG FIX 2: PUT payload lo duplicate fields remove chesi, clean ga anni new fields include chesamu
   async function handleSave() {
     if (!form.firstName.trim())                        { setFormMsg('❌ First Name is required.'); return; }
     if (!editingEmp && !photoUrl && !photoFile)        { setFormMsg('❌ Employee Photo is required.'); return; }
@@ -331,7 +345,6 @@ export default function EmployeesPage() {
 
     try {
       if (editingEmp) {
-        // ── UPDATE ──
         const payload = {
           id:               editingEmp._id,
           firstName:        form.firstName,
@@ -346,6 +359,21 @@ export default function EmployeesPage() {
           bloodGroup:       form.bloodGroup,
           employmentType:   form.employmentType,
           doj:              form.doj,
+          spouseOrGuardian: form.spouseOrGuardian,
+          aadhaarNumber:    form.aadhaarNumber,
+          emergencyContact: form.emergencyContact,
+          emergencyPhone:   form.emergencyPhone,
+          nomineeName:      form.nomineeName,
+          nomineeRelation:  form.nomineeRelation,
+          uanNumber:        form.uanNumber,
+          bankName:         form.bankName,
+          accountNumber:    form.accountNumber,
+          ifscCode:         form.ifscCode,
+          addressLine1:     form.addressLine1,
+          addressLine2:     form.addressLine2,
+          city:             form.city,
+          state:            form.state,
+          pincode:          form.pincode,
           ...(photoUrl   && { photoUrl }),
           ...(panUrl     && { panCard: panUrl }),
           ...(aadhaarUrl && { aadhaar: aadhaarUrl }),
@@ -361,7 +389,7 @@ export default function EmployeesPage() {
         setFormMsg('✅ Employee updated successfully!');
 
       } else {
-        // ── CREATE ──
+        // BUG FIX 3: POST payload lo kuda anni new fields include chesamu
         const payload = {
           empCode:          form.empCode,
           firstName:        form.firstName,
@@ -381,6 +409,21 @@ export default function EmployeesPage() {
           photoUrl,
           panCard:          panUrl,
           aadhaar:          aadhaarUrl,
+          spouseOrGuardian: form.spouseOrGuardian,
+          aadhaarNumber:    form.aadhaarNumber,
+          emergencyContact: form.emergencyContact,
+          emergencyPhone:   form.emergencyPhone,
+          nomineeName:      form.nomineeName,
+          nomineeRelation:  form.nomineeRelation,
+          uanNumber:        form.uanNumber,
+          bankName:         form.bankName,
+          accountNumber:    form.accountNumber,
+          ifscCode:         form.ifscCode,
+          addressLine1:     form.addressLine1,
+          addressLine2:     form.addressLine2,
+          city:             form.city,
+          state:            form.state,
+          pincode:          form.pincode,
         };
 
         const res = await fetch('/api/admin/employees', {
@@ -393,9 +436,7 @@ export default function EmployeesPage() {
         setFormMsg('✅ Employee saved successfully!');
       }
 
-      // Refresh list from MongoDB
       await fetchEmployees();
-
       setTimeout(() => {
         setView(VIEWS.LIST);
         setFormMsg('');
@@ -409,7 +450,6 @@ export default function EmployeesPage() {
     }
   }
 
-  // ── Delete from MongoDB ──
   async function handleDelete(id) {
     if (!confirm('Delete this employee? This cannot be undone.')) return;
     try {
@@ -433,12 +473,12 @@ export default function EmployeesPage() {
 
   function applyFilters(s, list) {
     let r = [...list];
-    if (s.empCode)        r = r.filter(e => e.empCode?.toLowerCase().includes(s.empCode.toLowerCase()));
-    if (s.firstName)      r = r.filter(e => e.firstName?.toLowerCase().includes(s.firstName.toLowerCase()));
-    if (s.lastName)       r = r.filter(e => e.lastName?.toLowerCase().includes(s.lastName.toLowerCase()));
+    if (s.empCode)          r = r.filter(e => e.empCode?.toLowerCase().includes(s.empCode.toLowerCase()));
+    if (s.firstName)        r = r.filter(e => e.firstName?.toLowerCase().includes(s.firstName.toLowerCase()));
+    if (s.lastName)         r = r.filter(e => e.lastName?.toLowerCase().includes(s.lastName.toLowerCase()));
     if (s.reportingManager) r = r.filter(e => e.reportingManager?.toLowerCase().includes(s.reportingManager.toLowerCase()));
-    if (s.status)         r = r.filter(e => e.status === s.status);
-    if (s.employmentType) r = r.filter(e => e.employmentType === s.employmentType);
+    if (s.status)           r = r.filter(e => e.status === s.status);
+    if (s.employmentType)   r = r.filter(e => e.employmentType === s.employmentType);
     setFiltered(r);
   }
 
@@ -485,7 +525,6 @@ export default function EmployeesPage() {
             {/* ══ LIST ══ */}
             {view === VIEWS.LIST && (
               <>
-                {/* Search */}
                 <div style={{ background:'#fff', borderRadius:'6px', border:`1px solid ${C.border}`, marginBottom:'16px', overflow:'hidden' }}>
                   <div style={{ background:C.panelHdr, padding:'10px 16px' }}>
                     <span style={{ color:'#fff', fontWeight:600, fontSize:'14px' }}>Search</span>
@@ -508,12 +547,9 @@ export default function EmployeesPage() {
                   </div>
                 </div>
 
-                {/* Table */}
                 <div style={{ background:'#fff', borderRadius:'6px', border:`1px solid ${C.border}`, overflow:'hidden' }}>
                   <div style={{ background:C.panelHdr, padding:'10px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'12px' }}>
-                    <span style={{ color:'#fff', fontWeight:600, fontSize:'14px' }}>
-                      List Of Employees ({filtered.length})
-                    </span>
+                    <span style={{ color:'#fff', fontWeight:600, fontSize:'14px' }}>List Of Employees ({filtered.length})</span>
                     <div style={{ display:'flex', gap:'8px' }}>
                       <button onClick={() => router.push('/admin/dashboard')} style={{ background:'rgba(255,255,255,0.15)', border:'1px solid rgba(255,255,255,0.3)', borderRadius:'4px', color:'#fff', padding:'6px 14px', cursor:'pointer', fontSize:'13px', fontWeight:600 }}>← Back</button>
                       <button onClick={fetchEmployees} style={{ background:'rgba(255,255,255,0.15)', border:'1px solid rgba(255,255,255,0.3)', borderRadius:'4px', color:'#fff', padding:'6px 14px', cursor:'pointer', fontSize:'13px', fontWeight:600 }}>🔄 Refresh</button>
@@ -531,7 +567,6 @@ export default function EmployeesPage() {
                     </div>
                   </div>
 
-                  {/* Loading state */}
                   {loading ? (
                     <div style={{ padding:'60px', textAlign:'center', color:C.muted }}>
                       <div style={{ fontSize:'32px', marginBottom:'8px' }}>⏳</div>
@@ -616,6 +651,7 @@ export default function EmployeesPage() {
                   </div>
                   <div style={{ padding:'24px' }}>
 
+                    {/* ── Basic Information ── */}
                     <h3 style={sectionTitle}>Basic Information</h3>
                     <div style={grid2}>
                       <div>
@@ -630,6 +666,8 @@ export default function EmployeesPage() {
                     </div>
 
                     <div style={{ margin:'20px 0', borderTop:`1px solid ${C.border}` }}/>
+
+                    {/* ── Job Details ── */}
                     <h3 style={sectionTitle}>Job Details</h3>
                     <div style={grid2}>
                       <F label="Department"><select value={form.department} onChange={e=>setForm({...form,department:e.target.value})} style={selectSt}><option value="">Select Department</option>{DEPARTMENTS.map(d=><option key={d}>{d}</option>)}</select></F>
@@ -641,6 +679,8 @@ export default function EmployeesPage() {
                     </div>
 
                     <div style={{ margin:'20px 0', borderTop:`1px solid ${C.border}` }}/>
+
+                    {/* ── Personal Details ── */}
                     <h3 style={sectionTitle}>Personal Details</h3>
                     <div style={grid2}>
                       <F label="Gender"><select value={form.gender} onChange={e=>setForm({...form,gender:e.target.value})} style={selectSt}><option value="">Select Gender</option><option>Male</option><option>Female</option><option>Other</option></select></F>
@@ -648,6 +688,186 @@ export default function EmployeesPage() {
                     </div>
 
                     <div style={{ margin:'20px 0', borderTop:`1px solid ${C.border}` }}/>
+
+                    {/* ── Identity Numbers ── */}
+                    <h3 style={sectionTitle}>Identity Numbers</h3>
+                    <div style={grid2}>
+                      <F label="Aadhaar Number">
+                        <input
+                          value={form.aadhaarNumber}
+                          onChange={e => setForm({...form, aadhaarNumber: e.target.value})}
+                          placeholder="XXXX XXXX XXXX"
+                          maxLength={14}
+                          style={{ ...inputSt, fontFamily:'monospace', letterSpacing:'2px' }}
+                        />
+                      </F>
+                      <F label="UAN Number (PF)">
+                        <input
+                          value={form.uanNumber}
+                          onChange={e => setForm({...form, uanNumber: e.target.value})}
+                          placeholder="e.g. 100XXXXXXXXX"
+                          style={{ ...inputSt, fontFamily:'monospace' }}
+                        />
+                      </F>
+                    </div>
+
+                    <div style={{ margin:'20px 0', borderTop:`1px solid ${C.border}` }}/>
+
+                    {/* ── Spouse / Guardian ── */}
+                    <h3 style={sectionTitle}>Spouse / Guardian</h3>
+                    <div style={grid2}>
+                      <F label="Spouse / Guardian Name">
+                        <input
+                          value={form.spouseOrGuardian}
+                          onChange={e => setForm({...form, spouseOrGuardian: e.target.value})}
+                          placeholder="e.g. Sunita Devi (Wife) or Ramesh Kumar (Father)"
+                          style={inputSt}
+                        />
+                      </F>
+                    </div>
+
+                    <div style={{ margin:'20px 0', borderTop:`1px solid ${C.border}` }}/>
+
+                    {/* ── Emergency Contact ── */}
+                    <h3 style={sectionTitle}>Emergency Contact</h3>
+                    <div style={grid2}>
+                      <F label="Emergency Contact Name">
+                        <input
+                          value={form.emergencyContact}
+                          onChange={e => setForm({...form, emergencyContact: e.target.value})}
+                          placeholder="e.g. Ramesh Kumar"
+                          style={inputSt}
+                        />
+                      </F>
+                      <F label="Emergency Contact Phone">
+                        <input
+                          type="tel"
+                          value={form.emergencyPhone}
+                          onChange={e => setForm({...form, emergencyPhone: e.target.value})}
+                          placeholder="+91 98765 43210"
+                          style={inputSt}
+                        />
+                      </F>
+                    </div>
+
+                    <div style={{ margin:'20px 0', borderTop:`1px solid ${C.border}` }}/>
+
+                    {/* ── Nominee (Insurance) ── */}
+                    <h3 style={sectionTitle}>Nominee (Insurance)</h3>
+                    <div style={grid2}>
+                      <F label="Nominee Name">
+                        <input
+                          value={form.nomineeName}
+                          onChange={e => setForm({...form, nomineeName: e.target.value})}
+                          placeholder="e.g. Sunita Devi"
+                          style={inputSt}
+                        />
+                      </F>
+                      <F label="Relation to Employee">
+                        <select
+                          value={form.nomineeRelation}
+                          onChange={e => setForm({...form, nomineeRelation: e.target.value})}
+                          style={selectSt}
+                        >
+                          <option value="">Select Relation</option>
+                          <option>Spouse</option>
+                          <option>Father</option>
+                          <option>Mother</option>
+                          <option>Son</option>
+                          <option>Daughter</option>
+                          <option>Brother</option>
+                          <option>Sister</option>
+                          <option>Other</option>
+                        </select>
+                      </F>
+                    </div>
+
+                    <div style={{ margin:'20px 0', borderTop:`1px solid ${C.border}` }}/>
+
+                    {/* ── Bank Account Details ── */}
+                    <h3 style={sectionTitle}>Bank Account Details</h3>
+                    <div style={{ marginBottom:'12px', padding:'10px 14px', background:'#fffbeb', border:'1px solid #fde68a', borderRadius:'8px', fontSize:'12px', color:'#92400e' }}>
+                      🔒 Bank details are sensitive. Ensure this information is stored and accessed securely.
+                    </div>
+                    <div style={grid2}>
+                      <F label="Bank Name">
+                        <input
+                          value={form.bankName}
+                          onChange={e => setForm({...form, bankName: e.target.value})}
+                          placeholder="e.g. State Bank of India"
+                          style={inputSt}
+                        />
+                      </F>
+                      <F label="Account Number">
+                        <input
+                          value={form.accountNumber}
+                          onChange={e => setForm({...form, accountNumber: e.target.value})}
+                          placeholder="e.g. 1234567890"
+                          style={{ ...inputSt, fontFamily:'monospace', letterSpacing:'1px' }}
+                        />
+                      </F>
+                      <F label="IFSC Code">
+                        <input
+                          value={form.ifscCode}
+                          onChange={e => setForm({...form, ifscCode: e.target.value.toUpperCase()})}
+                          placeholder="e.g. SBIN0001234"
+                          maxLength={11}
+                          style={{ ...inputSt, fontFamily:'monospace', letterSpacing:'1px', textTransform:'uppercase' }}
+                        />
+                      </F>
+                    </div>
+
+                    <div style={{ margin:'20px 0', borderTop:`1px solid ${C.border}` }}/>
+
+                    {/* ── Residential Address ── */}
+                    <h3 style={sectionTitle}>Residential Address</h3>
+                    <div style={grid2}>
+                      <F label="Address Line 1">
+                        <input
+                          value={form.addressLine1}
+                          onChange={e => setForm({...form, addressLine1: e.target.value})}
+                          placeholder="House No., Street / Colony"
+                          style={inputSt}
+                        />
+                      </F>
+                      <F label="Address Line 2">
+                        <input
+                          value={form.addressLine2}
+                          onChange={e => setForm({...form, addressLine2: e.target.value})}
+                          placeholder="Landmark, Area (optional)"
+                          style={inputSt}
+                        />
+                      </F>
+                      <F label="City">
+                        <input
+                          value={form.city}
+                          onChange={e => setForm({...form, city: e.target.value})}
+                          placeholder="e.g. Visakhapatnam"
+                          style={inputSt}
+                        />
+                      </F>
+                      <F label="State">
+                        <input
+                          value={form.state}
+                          onChange={e => setForm({...form, state: e.target.value})}
+                          placeholder="e.g. Andhra Pradesh"
+                          style={inputSt}
+                        />
+                      </F>
+                      <F label="PIN Code">
+                        <input
+                          value={form.pincode}
+                          onChange={e => setForm({...form, pincode: e.target.value})}
+                          placeholder="e.g. 530007"
+                          maxLength={6}
+                          style={inputSt}
+                        />
+                      </F>
+                    </div>
+
+                    <div style={{ margin:'20px 0', borderTop:`1px solid ${C.border}` }}/>
+
+                    {/* ── Photo & Documents ── */}
                     <h3 style={sectionTitle}>Photo & Documents</h3>
                     <div style={{ marginBottom:'14px', padding:'10px 14px', background:'#eff6ff', border:'1px solid #bfdbfe', borderRadius:'8px', fontSize:'12px', color:'#1e40af' }}>
                       📤 Files upload to <b>Cloudinary</b> automatically when selected. Wait for ✅ before saving.
