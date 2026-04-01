@@ -7,7 +7,7 @@ const menuItems = [
   { label: 'Services',         icon: '⚙️', path: '/admin/dashboard/services' },
   { label: 'Contacts',         icon: '📋', path: '/admin/dashboard/contacts' },
   { label: 'Employees',        icon: '👤', path: '/admin/dashboard/employees' },
-  { label: 'ID Cards',         icon: '🪪', path: '/admin/dashboard/idcards' },
+ 
   { label: ' salary slip', icon: '💰', path: '/admin/dashboard/salary' },
 ];
 
